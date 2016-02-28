@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # fast-blue-train
 
 FIXME
@@ -17,3 +18,6 @@ To start a web server for the application, run:
 ## License
 
 Copyright © 2016 FIXME
+=======
+# fast-blue-train
+>>>>>>> 8e7ba1c4647e5cc20dfffada250eac672bc7de21
