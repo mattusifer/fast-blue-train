@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link rel="stylesheet" 
+          type="text/css"
+          href="styles/styles.css">
+  </head>
+  <body>
+    <header>
+      Fast Blue Train
+    </header>
+    <section id="inputs">
+      <input id="startLocationInput" placeholder="start" type="text" />
+      <input id="endLocationInput" placeholder="end" type="text" />
+      <button id="directionSubmit">Go!</button>
+      <input type="radio" name="modes" value="driving" checked> Drive
+      <input type="radio" name="modes" value="walking"> Walk
+      <input type="radio" name="modes" value="transit"> Transit
+    </section>
+
+    <section id="map-container">
+      <div id="test-map">
+      </div>
+      <table id="instructions"></table>
+    </section>
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqQTKhPoDC9ruoKDoY1FoT74DxPRQ649Q&libraries=places,geometry"></script>
+    <script type="text/javascript" src="scripts/main.js"></script>
+  </body>
+</html>
