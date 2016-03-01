@@ -1,7 +1,7 @@
 # fast-blue-train
 
-## Running
+A web application built using Clojure and ClojureScript to find the fastest, cheapest route between two locations using the Google Maps API.
 
-To start a web server for the application, run:
+### Build
 
-    lein ring server
+Hit `lein ring server`
