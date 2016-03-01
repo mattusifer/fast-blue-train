@@ -8,7 +8,7 @@
 (declare *map*) 
 (declare start-input)
 (declare end-input)
-(declare places)
+(declare places) 
 
 (def directions-service (google.maps.DirectionsService.))
 

@@ -5,11 +5,16 @@
             [ring.middleware.json :as ring-json]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
 
+(defn wrap-root-index [handler]
+  (fn [req]
+    (handler
+     (update-in req [:uri]
+                #(if (= "/" %) "/index.html" %)))))
+
 (defroutes app-routes
-  (GET "/" [] (resp/response {:name "Cheshire Cat" :status :grinning}))
   (route/not-found "Page not found"))
 
 (def app
   (-> app-routes
-      (ring-json/wrap-json-response)
-      (wrap-defaults site-defaults)))
+      (wrap-defaults site-defaults)
+      (wrap-root-index)))
