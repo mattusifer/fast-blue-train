@@ -10,7 +10,8 @@
                  [org.clojure/clojurescript "1.7.228"]
                  [cljs-http "0.1.39"]
                  [org.clojure/core.async "0.2.374"]
-                 [prismatic/dommy "1.1.0"]]
+                 [prismatic/dommy "1.1.0"]
+                 [im.chit/gyr "0.3.1"]]
   :plugins [[lein-ring "0.9.7"]
             [lein-cljsbuild "1.1.2"]]
   :ring {:handler fast-blue-train.handler/app}
@@ -19,7 +20,6 @@
                         [ring/ring-mock "0.3.0"]]}}
   :cljsbuild {
               :builds [{:source-paths ["src-cljs"]
-                        :compiler {
-                                   :output-to "resources/public/scripts/main.js"
-                                   :optimizations :whitespace
+                        :compiler {:output-to "resources/public/scripts/main.js"
+                                   :optimizations :simple
                                    :pretty-print true}}]})
