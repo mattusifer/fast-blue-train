@@ -14,16 +14,8 @@ header {
 }
 
 #test-map {
-    display: none;
-    width: 200px;
+    display: block;
+    width: 70%;
     height: 300px;
-}
-
-pre {
-    display: inline-block;
-    width: 500px;
-    height: 250px;
-    padding: 25px;
-    background: #ddd;
 }
 
