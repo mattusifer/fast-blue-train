@@ -14,10 +14,12 @@
    :restrict "E"
    :templateUrl "angular/src/partials/directions.html"
    :scope {}
-   :controllerAs "view"
+   :controllerAs "vm"
    :bindToController true
    :controller 
    (fn [] 
+     (def vm this)
+
      (declare *map*) 
      (declare renderer)
      (declare start-input)
@@ -64,6 +66,7 @@
              get-min (fn [values] 
                        (let [min (apply min-key get-duration values)
                              mode (.-travelMode (.-request min))]
+                         (! vm.mode mode)
                          (.setDirections renderer min)))]
          (.then (.all $q (into-array promises)) get-min)))
      
@@ -95,4 +98,8 @@
        (set! places (js/google.maps.places.PlacesService. *map*))
        
        ;Submit
-       (dommy/listen! submit-elem "click" get-route)))))
+       (dommy/listen! submit-elem "click" get-route)
+       
+       vm))
+   :link
+   (fn [scope elm attr])))

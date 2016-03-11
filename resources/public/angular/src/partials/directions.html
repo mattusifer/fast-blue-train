@@ -2,6 +2,7 @@
   <input class="dir-input" id="startLocationInput" placeholder="start" type="text" />
   <input class="dir-input" id="endLocationInput" placeholder="end" type="text" />
   <button id="directionSubmit">Go!</button>
+<div ng-show="vm.mode != null">Fastest mode: {{ vm.mode }}</div>
 </section>
 <section id="map-container">
   <div id="test-map">
