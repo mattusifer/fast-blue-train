@@ -19,6 +19,7 @@
    :controller 
    (fn [] 
      (def vm this)
+     (! vm.initview true)
 
      (declare *map*) 
      (declare renderer)
@@ -28,13 +29,12 @@
 
      (def directions-service (js/google.maps.DirectionsService.))
      
-     (defn- on-place-changed 
-       "re-position map based on the value of the start element"
-       []
-       (let [place (.getPlace start-input)]
-         (when (.-geometry place)
-           (.panTo *map* (.-location (.-geometry place)))
-           (.setZoom *map* 15))))
+     (defn- refresh-map []
+       ;; TODO -- figure out how to refresh the map
+       ;; (let [center (.getCenter *map*)]
+       ;;   (.trigger js/google.maps.event *map* "resize")
+       ;;   (.panTo *map* center))
+       (.focus (sel1 :#startLocationInput)))
      
      (defn- get-directions-promise 
        "wrapper function to get a promise from the (callback-driven) Google Maps API"
@@ -63,16 +63,17 @@
                         (.-value 
                          (.-duration 
                           (first (.-legs (first (.-routes res)))))))
-             get-min (fn [values] 
-                       (let [min (apply min-key get-duration values)
-                             mode (.-travelMode (.-request min))]
-                         (! vm.mode mode)
-                         (.setDirections renderer min)))]
-         (.then (.all $q (into-array promises)) get-min)))
+             disp-route (fn [values] 
+                          (let [min (apply min-key get-duration values)]
+                            (! vm.initview false)
+
+                            (.setDirections renderer min)
+                            (refresh-map)))]
+         (.then (.all $q (into-array promises)) disp-route)))
      
      ; main
      (let [philly (js/google.maps.LatLng. 39.95 -75.1667)
-           map-opts (clj->js {"zoom" 9
+           map-opts (clj->js {"zoom" 10
                               "center" philly
                               "mapTypeId" "roadmap"})
            ac-opts (clj->js {"types" ["address"]
@@ -80,10 +81,10 @@
            map-elem (sel1 :#test-map)
            start-elem (sel1 :#startLocationInput)
            end-elem (sel1 :#endLocationInput)
-           submit-elem (sel1 :#directionSubmit)]
+           submit-elem (sel1 :#direction-submit)]
 
        ; configure map and renderer
-       (set! renderer (google.maps.DirectionsRenderer.))
+       (set! renderer (js/google.maps.DirectionsRenderer.))
        (set! *map* (js/google.maps.Map. map-elem map-opts))
        (.setMap renderer *map*)
        (.setPanel renderer (sel1 :#instructions-container))
@@ -91,15 +92,15 @@
        ;Start Input
        (set! start-input (js/google.maps.places.Autocomplete. start-elem ac-opts))
        (set! places (js/google.maps.places.PlacesService. *map*))
-       (.addListener start-input "place_changed" on-place-changed)
        
        ;End Input
        (set! end-input (js/google.maps.places.Autocomplete. end-elem ac-opts))
        (set! places (js/google.maps.places.PlacesService. *map*))
        
        ;Submit
-       (dommy/listen! submit-elem "click" get-route)
-       
+       (dommy/listen! submit-elem "click" 
+                      get-route)
+
        vm))
    :link
    (fn [scope elm attr])))

@@ -1,14 +1,27 @@
-<section id="inputs">
-  <input class="dir-input" id="startLocationInput" placeholder="start" type="text" />
-  <input class="dir-input" id="endLocationInput" placeholder="end" type="text" />
-  <button id="directionSubmit">Go!</button>
-<div ng-show="vm.mode != null">Fastest mode: {{ vm.mode }}</div>
+<section ng-class="{'input-init': vm.initview,
+                    'input-after-init': !vm.initview}">
+  <div id="input-container">
+    <div ng-show="vm.initview" class="input-label">
+      start
+    </div>
+    <div ng-show="vm.initview" class="input-label">
+      end
+    </div>
+    <input class="dir-input" id="startLocationInput" 
+           placeholder="" type="text" />
+    <input class="dir-input" id="endLocationInput" 
+           placeholder="" type="text" />
+  </div>
+  <div id="submit-container">
+    <button id="direction-submit">Get Directions</button>
+  </div>
 </section>
-<section id="map-container">
+
+<section ng-show="!vm.initview" id="map-container">
   <div id="test-map">
   </div>
 </section>
-<div id="instructions-container">
+<div ng-show="!vm.initview" id="instructions-container">
 </div>
 
 

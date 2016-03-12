@@ -5,6 +5,7 @@
 /checkouts
 /resources/public/scripts/main.js
 pom.xml
+nohup.out
 pom.xml.asc
 *.jar
 *.class
