@@ -1,3 +1,8 @@
+<header ng-class="{'header-init': vm.initview,
+                   'header-post-init': !vm.initview}">
+  <div ng-show="vm.initview" class="title">fast blue train</div>
+  <div ng-show="!vm.initview" class="title">fbt</div>
+</header>
 <section ng-class="{'input-init': vm.initview,
                     'input-after-init': !vm.initview}">
   <div id="input-container">
@@ -17,11 +22,11 @@
   </div>
 </section>
 
-<section ng-show="!vm.initview" id="map-container">
+<section id="map-container">
   <div id="test-map">
   </div>
 </section>
-<div ng-show="!vm.initview" id="instructions-container">
+<div id="instructions-container">
 </div>
 
 

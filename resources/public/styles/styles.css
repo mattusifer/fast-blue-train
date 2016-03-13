@@ -5,21 +5,10 @@ html, body {
 
 body {
     font-family: "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif;
-
 }
 
 header {
-    position: absolute;
-    top: 30%;
-    width: 100%;
-    padding: 15px;
-    font-size: 3em;
-    text-align: center;
-}
-
-header .subtitle {
-    font-size: .5em;
-    color: #aaa;
+    z-index: 1;
 }
 
 .dir-input {
@@ -28,17 +17,27 @@ header .subtitle {
 
 /* ----------- init view ----------- */
 
+header.header-init {
+    position: absolute;
+    top: 30%;
+    width: 100%;
+    padding: 15px;
+    font-size: 3em;
+    text-align: center;
+}
+
 .input-init {
     position:absolute;
-    top: 40%;
+    top: 0;
     display: block;
     width: 100%;
-    height: 80px;    
+    height: 100%;    
+    background: #fff;
 }
 
 .input-init #input-container, #submit-container {
     position: absolute; 
-    left: 50%;
+    top: 40%; left: 50%;
     width: 600px;
     margin-left: -300px;
     padding: 10px 0;
@@ -46,7 +45,7 @@ header .subtitle {
 }
 
 .input-init #submit-container {
-    top: 100px;
+    top: 63%;
     height: 20px;
 }
 
@@ -72,24 +71,35 @@ header .subtitle {
 
 /* ----------- post-init view ----------- */
 
+header.header-post-init {
+    position: fixed;
+    top: 0; left: 0;
+    width: 50px;
+    padding: 9px;
+    font-size: 1.5em;
+}
+
 .input-after-init {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
+    height: 50px;
+    background: #fff;
 }
 
 .input-after-init #input-container {
     position: absolute;
-    top: 0; left: 0;
+    top: 0; left: 50px;
+    padding: 5px;
     width: 500px;
 }
 
 .input-after-init #submit-container {
     position: absolute;
-    top: 0; left: 503px;
+    top: 0; left: 553px;
     width: 115px;
-    padding: 0;
+    padding: 5px;
     margin: 0;
 }
 
@@ -98,11 +108,12 @@ header .subtitle {
     margin-top: 40px;
     width: 100%;
     height: 300px;
+    z-index: -1;
 }
 
-#directions-container {
-    display: inline-block;
-    width: 100%;
+#instructions-container {
+    display: block;
+    width: 50%;
 }
 
 .input-after-init #submit-container button {
@@ -122,6 +133,3 @@ header .subtitle {
     border: 1px solid #ddd;
     border-radius: 0;
 }
-
-
-
