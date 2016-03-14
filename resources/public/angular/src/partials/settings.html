@@ -1,0 +1,63 @@
+<button id="settings-button" 
+        ng-click="vm.popoverVisible = !vm.popoverVisible">
+  Settings
+</button>
+<div id="settings-popover" ng-show="vm.popoverVisible">
+  <div id="settings-header">User Settings</div>
+  <div class="settings-form-element">
+    <div class="settings-form-element-label">
+      I have a car
+    </div>
+    <div class="settings-form-element-input">
+      <input type="checkbox" ng-model="vm.user.hasCar" 
+             ng-change="vm.setPreference('hasCar', vm.user.hasCar)"/>
+    </div>
+  </div>
+  <div class="settings-form-element">
+    <div class="settings-form-element-label">
+      MPG:
+    </div>
+    <div class="settings-form-element-input">
+      <input type="text" ng-model="vm.user.carMPG"
+             ng-change="vm.setPreference('carMPG', vm.user.carMPG)" />
+    </div>
+  </div>
+  <div class="settings-form-element">
+    <div class="settings-form-element-label">
+      Location of car:
+    </div>
+    <div class="settings-form-element-input">
+      <input type="text" ng-model="vm.user.carLocation"
+             ng-change="vm.setPreference('carLocation', vm.user.carLocation)" />
+    </div>
+  </div>
+  <div class="settings-form-element">
+    <div class="settings-form-element-label">
+      I have a bike
+    </div>
+    <div class="settings-form-element-input">
+      <input type="checkbox" ng-model="vm.user.hasBike"
+             ng-change="vm.setPreference('hasBike', vm.user.hasBike)" />
+    </div>
+  </div>
+  <div class="settings-form-element">
+    <div class="settings-form-element-label">
+      Location of bike:
+    </div>
+    <div class="settings-form-element-input">
+      <input type="text" ng-model="vm.user.bikeLocation"
+        ng-change="vm.setPreference('bikeLocation',vm.user.bikeLocation)"/>
+    </div>
+  </div>
+    <div class="settings-form-element">
+    <div class="settings-form-element-label">
+      Budget for trip:
+    </div>
+    <div class="settings-form-element-input">
+      <input type="text" ng-model="vm.user.budget"
+             ng-change="vm.setPreference('budget', vm.user.budget)" />
+    </div>
+  </div>
+</div>
+<div id="settings-popover-scrim" ng-show="vm.popoverVisible"
+     ng-click="vm.popoverVisible = !vm.popoverVisible"></div>
