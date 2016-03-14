@@ -18,6 +18,9 @@
    (fn [] 
      (def vm this)
      (! vm.initview true)
+     (! vm.start "")
+     (! vm.end "")
+     (! vm.switchView (fn [] (! vm.initview false)))
 
      (def modes [js/google.maps.TravelMode.DRIVING
                  js/google.maps.TravelMode.WALKING
@@ -39,11 +42,9 @@
        (let [promises (map (partial (.-getDirections GoogleMapsService) 
                                     start end) modes)
              handler (fn [values]
-                       (! vm.initview false)
                        ((.-displayRoute GoogleMapsService) (get-optimal-route values))
                        (reset-focus))]
          (.then (.all $q (into-array promises)) handler)))
-
      vm)
 
    :link
@@ -51,16 +52,10 @@
      (let [start-elem (sel1 :#startLocationInput)
            end-elem (sel1 :#endLocationInput)
            submit-elem (sel1 :#direction-submit)
-           ac-opts (.-autocompleteOpts GoogleMapsService)]
+           ac-opts (.-autocompleteOpts GoogleMapsService)
+           start-input (js/google.maps.places.Autocomplete. start-elem ac-opts)
+           end-input (js/google.maps.places.Autocomplete. end-elem ac-opts)]
 
-       (declare start-input)
-       (declare end-input)
-
-       ;Start Input
-       (set! start-input (js/google.maps.places.Autocomplete. start-elem ac-opts))
-       
-       ;End Input
-       (set! end-input (js/google.maps.places.Autocomplete. end-elem ac-opts))
        ;Submit
        (dommy/listen! submit-elem "click" 
                       (fn [] (get-route (.-value start-elem)

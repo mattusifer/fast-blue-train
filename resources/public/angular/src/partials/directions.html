@@ -1,7 +1,8 @@
 <header ng-class="{'header-init': vm.initview,
                    'header-post-init': !vm.initview}">
   <div ng-show="vm.initview" class="title">fast blue train</div>
-  <div ng-show="!vm.initview" class="title">fbt</div>
+  <div ng-show="!vm.initview" class="title"
+       ng-click="vm.initview = true">fbt</div>
 </header>
 <section ng-class="{'input-init': vm.initview,
                     'input-after-init': !vm.initview}">
@@ -13,9 +14,9 @@
       end
     </div>
     <input class="dir-input" id="startLocationInput" 
-           placeholder="" type="text" />
-    <input class="dir-input" id="endLocationInput" 
-           placeholder="" type="text" />
+           placeholder="" type="text" ng-click="vm.switchView()" />
+    <input class="dir-input" id="endLocationInput"
+           placeholder="" type="text" ng-click="vm.switchView() "/>
   </div>
   <div id="submit-container">
     <button id="direction-submit">Get Directions</button>
