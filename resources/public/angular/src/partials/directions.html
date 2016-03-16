@@ -14,11 +14,13 @@
       end
     </div>
     <input class="dir-input" id="startLocationInput" 
-           placeholder="" type="text" ng-click="vm.switchView()" />
+           placeholder="" type="text" />
     <input class="dir-input" id="endLocationInput"
-           placeholder="" type="text" ng-click="vm.switchView() "/>
+           placeholder="" type="text" />
   </div>
   <div id="submit-container">
-    <button id="direction-submit">Get Directions</button>
+    <button id="direction-submit" ng-click="vm.switchView()">
+      Get Directions
+    </button>
   </div>
 </section>

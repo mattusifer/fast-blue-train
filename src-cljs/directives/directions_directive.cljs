@@ -2,7 +2,7 @@
   fast-blue-train.directives.directions-directive
   (:require [fast-blue-train.services.google-maps-service :as maps]
             [dommy.core :as dommy :refer-macros [sel1 sel]])
-  (:use-macros [purnam.core :only [obj !]]
+  (:use-macros [purnam.core :only [obj ! ?]]
                [gyr.core :only [def.controller def.directive]]))
 
 (def.directive fbm.app.directions [$q 
@@ -22,10 +22,12 @@
      (! vm.end "")
      (! vm.switchView (fn [] (! vm.initview false)))
 
-     (def modes [js/google.maps.TravelMode.DRIVING
-                 js/google.maps.TravelMode.WALKING
-                 js/google.maps.TravelMode.BICYCLING
-                 js/google.maps.TravelMode.TRANSIT])
+     (defn available-modes []
+       (let [modes {js/google.maps.TravelMode.WALKING true
+                    js/google.maps.TravelMode.TRANSIT true
+                    js/google.maps.TravelMode.DRIVING (? UserService.preferences.hasCar)
+                    js/google.maps.TravelMode.BICYCLING (? UserService.preferences.hasBike)}] 
+         (keys (into {} (filter second modes)))))
 
      (defn reset-focus []
        (.focus (sel1 :#startLocationInput)))
@@ -40,7 +42,7 @@
        "Get shortest route between start and destination"
        [start end]
        (let [promises (map (partial (.-getDirections GoogleMapsService) 
-                                    start end) modes)
+                                    start end) (available-modes))
              handler (fn [values]
                        ((.-displayRoute GoogleMapsService) (get-optimal-route values))
                        (reset-focus))]
