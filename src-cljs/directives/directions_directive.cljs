@@ -25,26 +25,28 @@
      (defn available-modes []
        (let [modes {js/google.maps.TravelMode.WALKING true
                     js/google.maps.TravelMode.TRANSIT true
-                    js/google.maps.TravelMode.DRIVING (? UserService.preferences.hasCar)
-                    js/google.maps.TravelMode.BICYCLING (? UserService.preferences.hasBike)}] 
+                    js/google.maps.TravelMode.DRIVING 
+                    (? UserService.preferences.hasCar)
+                    js/google.maps.TravelMode.BICYCLING 
+                    (? UserService.preferences.hasBike)}] 
          (keys (into {} (filter second modes)))))
 
      (defn reset-focus []
        (.focus (sel1 :#startLocationInput)))
 
-     (defn get-duration [response]
-       (.-value (.-duration (first (.-legs (first (.-routes response)))))))
- 
      (defn get-optimal-route [routes]
-       (apply min-key get-duration routes))
+       (apply min-key (? GoogleMapsService.getDurationFromResponse) 
+              routes))
 
      (defn get-route
        "Get shortest route between start and destination"
        [start end]
-       (let [promises (map (partial (.-getDirections GoogleMapsService) 
+       (let [promises (map (partial (? GoogleMapsService.getDirections) 
                                     start end) (available-modes))
              handler (fn [values]
-                       ((.-displayRoute GoogleMapsService) (get-optimal-route values))
+                       ((? GoogleMapsService.displayRoutes) 
+                        values ;(get-optimal-route values)
+                        )
                        (reset-focus))]
          (.then (.all $q (into-array promises)) handler)))
      vm)
@@ -54,7 +56,7 @@
      (let [start-elem (sel1 :#startLocationInput)
            end-elem (sel1 :#endLocationInput)
            submit-elem (sel1 :#direction-submit)
-           ac-opts (.-autocompleteOpts GoogleMapsService)
+           ac-opts (? GoogleMapsService.autocompleteOpts)
            start-input (js/google.maps.places.Autocomplete. start-elem ac-opts)
            end-input (js/google.maps.places.Autocomplete. end-elem ac-opts)]
 

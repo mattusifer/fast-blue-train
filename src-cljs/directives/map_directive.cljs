@@ -22,4 +22,4 @@
      (let [map-elem (sel1 :#test-map)
            panel-elem (sel1 :#instructions-container)]
        ((.-configureMap GoogleMapsService) map-elem)
-       ((.-configureRenderer GoogleMapsService) panel-elem)))))
+       ((.-configurePanel GoogleMapsService) panel-elem)))))

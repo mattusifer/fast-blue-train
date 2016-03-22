@@ -5,25 +5,61 @@
                [gyr.core :only [def.factory]]))
 
 (def.factory fbm.app.GoogleMapsService [$q]
+  (defn- merge-poly-lines [polyline]
+    )
   (def mapObj
     (obj 
      :gMap nil
-     :renderer nil
+     :panel nil
+     :renderers (clj->js [])
+     :polyLines (obj :WALKING (js/google.maps.Polyline. 
+                               (obj :strokeColor "#FF0000"))
+                     :DRIVING (js/google.maps.Polyline. 
+                               (obj :strokeColor "#00FF00"))
+                     :TRANSIT (js/google.maps.Polyline. 
+                               (obj :strokeColor "#0000FF"))
+                     :BICYCLING (js/google.maps.Polyline. 
+                                 (obj :strokeColor "#000000")))
      :mapOpts (let [philly (js/google.maps.LatLng. 39.95 -75.1667)]
-                (clj->js {"zoom" 10
-                          "center" philly
-                          "mapTypeId" "roadmap"}))
+                (obj :zoom 10
+                     :center philly
+                     :mapTypeId "roadmap"))
+     :getDurationFromResponse 
+     (fn [response]
+       (.log js/console response)
+       (.-value (.-duration (first (.-legs (first (.-routes response)))))))
+     :getTransportModeFromResponse
+     (fn [response]
+       (? response.request.travelMode))
      :configureMap 
      (fn [map-elem map-opts] 
        (! mapObj.gMap (js/google.maps.Map. map-elem (? mapObj.mapOpts))))
-     :configureRenderer (fn [panel-elem]
-                          (let [renderer (js/google.maps.DirectionsRenderer.)]
-                            (.setMap renderer (? mapObj.gMap))
-                            (.setPanel renderer panel-elem)
-                            (! mapObj.renderer renderer)))
-     :autocompleteOpts (clj->js {"types" ["address"]
-                                 "componentRestrictions" {"country" "us"}})
-     :displayRoute (fn [route] (.setDirections (? mapObj.renderer) route))
+     :configurePanel
+     (fn [panel-elem] (! mapObj.panel panel-elem))
+     :autocompleteOpts (obj :types ["address"]
+                            :componentRestrictions {"country" "us"})
+     :displayRoutes 
+     (fn [routes] 
+       ; TODO clear map and panel
+       ;; (doseq [renderer (? mapObj.renderers)]
+         ;; (when (not (nil? renderer))
+           ;; (.setMap renderer nil)) (.setPanel renderer nil))
+
+       ;; (.log js/console (? mapObj.renderers))
+
+       ;; (! mapObj.renderers (clj->js []))
+       
+       ; display new routes
+       (doseq [route routes]
+         (let [mode ((? mapObj.getTransportModeFromResponse) route)
+               renderer (js/google.maps.DirectionsRenderer. 
+                         (obj :polylineOptions 
+                              (aget (? mapObj.polyLines) mode)))]
+           (.push (? mapObj.renderers)            
+                  (-> renderer
+                      (.setMap (? mapObj.gMap))
+                      (.setPanel (? mapObj.panel))
+                      (.setDirections route))))))
      :getDirections 
      (fn [start end mode]
        (let [deferred (.defer $q)
