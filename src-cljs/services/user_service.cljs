@@ -7,7 +7,9 @@
 (def.factory fbm.app.UserService []
   (def user 
     (obj
-     :preferences {:hasCar false
+     :preferences {:startLocation nil
+                   :endLocation nil
+                   :hasCar false
                    :carLocation nil
                    :carMPG nil
                    :hasBike false

@@ -5,8 +5,6 @@
                [gyr.core :only [def.factory]]))
 
 (def.factory fbm.app.GoogleMapsService [$q]
-  (defn- merge-poly-lines [polyline]
-    )
   (def mapObj
     (obj 
      :gMap nil
@@ -26,7 +24,6 @@
                      :mapTypeId "roadmap"))
      :getDurationFromResponse 
      (fn [response]
-       (.log js/console response)
        (.-value (.-duration (first (.-legs (first (.-routes response)))))))
      :getTransportModeFromResponse
      (fn [response]
@@ -40,26 +37,22 @@
                             :componentRestrictions {"country" "us"})
      :displayRoutes 
      (fn [routes] 
-       ; TODO clear map and panel
-       ;; (doseq [renderer (? mapObj.renderers)]
-         ;; (when (not (nil? renderer))
-           ;; (.setMap renderer nil)) (.setPanel renderer nil))
+       ; clear map & panel
+       (doseq [renderer (? mapObj.renderers)]
+         (when (not (nil? renderer))
+           (.setMap renderer nil)) (.setPanel renderer nil))
+       (! mapObj.renderers (clj->js []))
 
-       ;; (.log js/console (? mapObj.renderers))
-
-       ;; (! mapObj.renderers (clj->js []))
-       
        ; display new routes
        (doseq [route routes]
          (let [mode ((? mapObj.getTransportModeFromResponse) route)
                renderer (js/google.maps.DirectionsRenderer. 
                          (obj :polylineOptions 
                               (aget (? mapObj.polyLines) mode)))]
-           (.push (? mapObj.renderers)            
-                  (-> renderer
-                      (.setMap (? mapObj.gMap))
-                      (.setPanel (? mapObj.panel))
-                      (.setDirections route))))))
+           (.setMap renderer (? mapObj.gMap))
+           (.setPanel renderer (? mapObj.panel))
+           (.setDirections renderer route)
+           (.push (? mapObj.renderers) renderer))))
      :getDirections 
      (fn [start end mode]
        (let [deferred (.defer $q)
