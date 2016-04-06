@@ -1,9 +1,8 @@
 /target
-/target/*
 /lib
 /classes
 /checkouts
-/resources/public/scripts/main.js
+/resources/public/scripts/
 pom.xml
 nohup.out
 pom.xml.asc

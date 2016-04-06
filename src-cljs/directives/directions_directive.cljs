@@ -31,22 +31,135 @@
        (let [modes {js/google.maps.TravelMode.WALKING true
                     js/google.maps.TravelMode.TRANSIT true
                     js/google.maps.TravelMode.DRIVING 
-                    (? UserService.preferences.hasCar) 
+                    (not (nil? (? UserService.preferences.carLocation))) 
                     js/google.maps.TravelMode.BICYCLING 
-                    (? UserService.preferences.hasBike)}]
+                    (not (nil? (? UserService.preferences.bikeLocation)))}]
          (keys (into {} (filter second modes)))))
 
      (defn reset-focus []
        (.focus (sel1 :#startLocationInput)))
 
-     (defn get-optimal-route [routes]
-       (apply min-key (? GoogleMapsService.getDurationFromResponse) routes))
+     (defn get-optimal-route 
+       "return the best route"
+       [routes]
+       routes
+       ; (apply min-key (? GoogleMapsService.getDurationFromResponse) routes)
+       )
+
+     (defn organize-responses 
+       "organize raw responses into complete routes"
+       [responses]
+       (loop [response (first responses)
+              rem (rest responses)
+              organized {:base {:walking [nil], :transit [nil]}, 
+                         :car {:walking [nil nil], :transit [nil nil]}, 
+                         :bike {:walking [nil nil], :transit [nil nil]}, 
+                         :car-bike {:walking [nil nil nil], 
+                                    :transit [nil nil nil]}, 
+                         :bike-car {:walking [nil nil nil], 
+                                    :transit [nil nil nil]}}]
+         (if (empty? rem) organized
+             (let [prepend (fn [vec el] (into [] (cons el (rest vec))))
+                   insert-middle (fn [vec el] (conj [] (last vec) el (first vec)))
+                   append (fn [vec el] (conj [] el (second vec) (first vec)))
+                   start (str (? vm.user.startLocation))
+                   end (? vm.user.endLocation)
+                   bike (? vm.user.bikeLocation)
+                   car (? vm.user.carLocation)
+                   origin (? response.request.origin)
+                   destination (str (? response.request.destination))
+                   mode (? response.request.travelMode)]
+               (.log js/console destination)
+               (.log js/console end)
+               (if (= origin start)
+                 (case destination
+                   end 
+                   (if (= mode "WALKING") 
+                     (recur (first rem) (rest rem) 
+                            (update-in organized [:base :walking] 
+                                       #(prepend % response)))
+                     (recur (first rem) (rest rem)
+                            (update-in organized [:base :transit]
+                                       #(prepend % response))))
+                   bike
+                   (if (= mode "WALKING")
+                     (recur (first rem) (rest rem)
+                            (-> organized 
+                                (update-in [:bike :walking] 
+                                           #(prepend % response))
+                                (update-in [:bike-car :walking] 
+                                           #(prepend % response))))
+                     (recur (first rem) (rest rem)
+                            (-> organized
+                                (update-in [:bike :transit]
+                                           #(prepend % response))
+                                (update-in [:bike-car :transit]
+                                           #(prepend % response)))))
+                   car
+                   (if (= mode "WALKING")
+                     (recur (first rem) (rest rem)
+                            (-> organized 
+                                (update-in [:car :walking] 
+                                           #(prepend % response))
+                                (update-in [:car-bike :walking] 
+                                           #(prepend % response))))
+                     (recur (first rem) (rest rem)
+                            (-> organized
+                                (update-in [:car :transit]
+                                           #(prepend % response))
+                                (update-in [:car-bike :transit]
+                                           #(prepend % response)))))
+                   :default (do (.log js/console destination)
+                                (.log js/console end)))
+                 (if (= origin bike)
+                   (case destination
+                     end
+                     (recur (first rem) (rest rem)
+                            (-> organized
+                                (update-in [:bike :walking]
+                                           #(append % response))
+                                (update-in [:bike :transit]
+                                           #(append % response))
+                                (update-in [:car-bike :walking]
+                                           #(append % response))
+                                (update-in [:car-bike :transit]
+                                           #(append % response))))
+                     car
+                     (recur (first rem) (rest rem)
+                            (-> organized
+                                (update-in [:bike-car :walking]
+                                           #(insert-middle % response))
+                                (update-in [:bike-car :walking]
+                                           #(insert-middle % response)))))
+                   ;; car location
+                   (case destination
+                     end
+                     (recur (first rem) (rest rem)
+                            (-> organized
+                                (update-in [:car :walking]
+                                           #(append % response))
+                                (update-in [:car :transit]
+                                           #(append % response))
+                                (update-in [:bike-car :walking]
+                                           #(append % response))
+                                (update-in [:bike-car :transit]
+                                           #(append % response))))
+                     bike
+                     (recur (first rem) (rest rem)
+                            (-> organized
+                                (update-in [:car-bike :walking]
+                                           #(insert-middle % response))
+                                (update-in [:car-bike :transit]
+                                           #(insert-middle % response)))))))))))
 
      (defn handler [responses]
        (.log js/console "responses")
        (.log js/console responses)
-       ((? GoogleMapsService.displayRoutes) ;(get-optimal-route responses)
-        responses))
+       (let [organized-responses (organize-responses responses)]
+         (.log js/console organized-responses)
+         ;; ((? GoogleMapsService.displayRoutes) 
+          ;; (get-optimal-route organized-responses))
+         ))
 
      (defn make-requests [routes delay]
        (.log js/console "routes:")
@@ -66,27 +179,41 @@
      (defn gather-routes
        "return all available routes"
        [start car bike end]
-       (filter #(not (nil? %)) 
-               (for [route [[start end]
-                            (if car [start car] nil)
-                            (if car [car end] nil)
-                            (if bike [start bike] nil)
-                            (if bike [bike end] nil)]
-                     mode (available-modes)]
-                 (if (or (nil? route) (nil? mode)
-                         (and (not= (second route) end)
-                              (or (= mode 
-                                     js/google.maps.TravelMode.DRIVING)
-                                  (= mode 
-                                     js/google.maps.TravelMode.BICYCLING))))
-                   nil (conj route mode)))))
+       (.log js/console start)
+       (.log js/console end)
+       (filter 
+        #(not (nil? %)) 
+        (into #{} 
+              (for [route [[start end]
+                           (if car [start car] nil)
+                           (if car [car end] nil)
+                           (if bike [start bike] nil)
+                           (if bike [bike end] nil)
+                           (if (and car bike) [bike car] nil)
+                           (if (and car bike) [car bike] nil)]
+                    mode (available-modes)]
+                (if (or (nil? route) (nil? mode)
+                        ;; for intermediate routes
+                        (and (not= (second route) end)
+                             
+                             ;; can't drive to go get the car
+                             (or (and (= (second route) car) 
+                                      (= mode 
+                                         js/google.maps.TravelMode.DRIVING))
+                                 
+                                 ;; can't bike to go get the bike
+                                 (and (= (second route) bike) 
+                                      (= mode 
+                                         js/google.maps.TravelMode.BICYCLING)))))
+                  nil (conj route mode))))))
 
      (! vm.main (fn []
-                  (let [routes (gather-routes (? vm.user.startLocation)
+                  (let [delay 800 ;; delay between requests
+                        routes (gather-routes (? vm.user.startLocation)
                                               (? vm.user.carLocation)
                                               (? vm.user.bikeLocation)
                                               (? vm.user.endLocation))]
-                    (make-requests routes 100))))
+                    (make-requests routes delay))))
      vm)
 
    :link

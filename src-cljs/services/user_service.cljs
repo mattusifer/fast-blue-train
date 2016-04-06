@@ -9,10 +9,8 @@
     (obj
      :preferences {:startLocation nil
                    :endLocation nil
-                   :hasCar false
                    :carLocation nil
                    :carMPG nil
-                   :hasBike false
                    :bikeLocation nil
                    :budget nil}
      :setPreference (fn [preference value] 
