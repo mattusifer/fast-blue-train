@@ -48,7 +48,8 @@
          (let [mode ((? mapObj.getTransportModeFromResponse) route)
                renderer (js/google.maps.DirectionsRenderer. 
                          (obj :polylineOptions 
-                              (aget (? mapObj.polyLines) mode)))]
+                              (aget (? mapObj.polyLines) mode)
+                              :preserveViewport true))]
            (.setMap renderer (? mapObj.gMap))
            (.setPanel renderer (? mapObj.panel))
            (.setDirections renderer route)

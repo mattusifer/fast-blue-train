@@ -53,108 +53,110 @@
      (defn organize-responses 
        "organize raw responses into complete routes"
        [responses]
-       (loop [response (first responses)
-              rem (rest responses)
-              organized {:base {:walking [nil], :transit [nil]}, 
-                         :car {:walking [nil nil], :transit [nil nil]}, 
-                         :bike {:walking [nil nil], :transit [nil nil]}, 
-                         :car-bike {:walking [nil nil nil], 
-                                    :transit [nil nil nil]}, 
-                         :bike-car {:walking [nil nil nil], 
-                                    :transit [nil nil nil]}}]
-         (if (nil? response) organized
-             (let [prepend (fn [vec el] (into [] (cons el (rest vec))))
-                   insert-middle (fn [vec el] 
-                                   (if (= (count vec) 3) 
-                                     (conj [] (first vec) el (last vec))
-                                     (prepend vec el)))
-                   append (fn [vec el] (conj (into [] (butlast vec)) el))
-                   start (str (? vm.user.startLocation))
-                   end (? vm.user.endLocation)
-                   bike (? vm.user.bikeLocation)
-                   car (? vm.user.carLocation)
-                   origin (? response.request.origin)
-                   destination (str (? response.request.destination))
-                   mode (? response.request.travelMode)]
-               (if (= origin start)
-                 (condp = destination
-                   end 
-                   (if (= mode "WALKING") 
-                     (recur (first rem) (rest rem) 
-                            (update-in organized [:base :walking] 
-                                       #(prepend % response)))
-                     ;; transit
-                     (recur (first rem) (rest rem)
-                            (update-in organized [:base :transit]
-                                       #(prepend % response))))
-                   bike
-                   (if (= mode "WALKING")
-                     (recur (first rem) (rest rem)
-                            (-> organized 
-                                (update-in [:bike :walking] 
-                                           #(prepend % response))
-                                (update-in [:bike-car :walking] 
-                                           #(prepend % response))))
-                     (recur (first rem) (rest rem)
-                            (-> organized
-                                (update-in [:bike :transit]
-                                           #(prepend % response))
-                                (update-in [:bike-car :transit]
-                                           #(prepend % response)))))
-                   car
-                   (if (= mode "WALKING")
-                     (recur (first rem) (rest rem)
-                            (-> organized 
-                                (update-in [:car :walking] 
-                                           #(prepend % response))
-                                (update-in [:car-bike :walking] 
-                                           #(prepend % response))))
-                     (recur (first rem) (rest rem)
-                            (-> organized
-                                (update-in [:car :transit]
-                                           #(prepend % response))
-                                (update-in [:car-bike :transit]
-                                           #(prepend % response))))))
-                 (if (= origin bike)
-                   (condp = destination
-                     end
-                     (recur (first rem) (rest rem)
-                            (-> organized
-                                (update-in [:bike :walking]
-                                           #(append % response))
-                                (update-in [:bike :transit]
-                                           #(append % response))
-                                (update-in [:car-bike :walking]
-                                           #(append % response))
-                                (update-in [:car-bike :transit]
-                                           #(append % response))))
-                     car
-                     (recur (first rem) (rest rem)
-                            (-> organized
-                                (update-in [:bike-car :walking]
-                                           #(insert-middle % response))
-                                (update-in [:bike-car :transit]
-                                           #(insert-middle % response)))))
-                   ;; car location
-                   (condp = destination
-                     end
-                     (recur (first rem) (rest rem)
-                            (-> organized
-                                (update-in [:car :walking]
-                                           #(append % response))
-                                (update-in [:car :transit]
-                                           #(append % response))
-                                (update-in [:bike-car :walking]
-                                           #(append % response))
-                                (update-in [:bike-car :transit]
-                                           #(append % response))))
-                     bike
-                     (recur (first rem) (rest rem)
-                            (-> organized
-                                (update-in [:car-bike :walking]
-                                           #(insert-middle % response))
-                                (update-in [:car-bike :transit]
-                                           #(insert-middle % response)))))))))))
+       (filter 
+        #(not (some nil? (for [x (second %) y (second x)] y)))
+        (loop [response (first responses)
+               rem (rest responses)
+               organized {:base {:walking [nil], :transit [nil]}, 
+                          :car {:walking [nil nil], :transit [nil nil]}, 
+                          :bike {:walking [nil nil], :transit [nil nil]}, 
+                          :car-bike {:walking [nil nil nil], 
+                                     :transit [nil nil nil]}, 
+                          :bike-car {:walking [nil nil nil], 
+                                     :transit [nil nil nil]}}]
+          (if (nil? response) organized
+              (let [prepend (fn [vec el] (into [] (cons el (rest vec))))
+                    insert-middle (fn [vec el] 
+                                    (if (= (count vec) 3) 
+                                      (conj [] (first vec) el (last vec))
+                                      (prepend vec el)))
+                    append (fn [vec el] (conj (into [] (butlast vec)) el))
+                    start (str (? vm.user.startLocation))
+                    end (? vm.user.endLocation)
+                    bike (? vm.user.bikeLocation)
+                    car (? vm.user.carLocation)
+                    origin (? response.request.origin)
+                    destination (str (? response.request.destination))
+                    mode (? response.request.travelMode)]
+                (if (= origin start)
+                  (condp = destination
+                    end 
+                    (if (= mode "WALKING") 
+                      (recur (first rem) (rest rem) 
+                             (update-in organized [:base :walking] 
+                                        #(prepend % response)))
+                      ;; transit
+                      (recur (first rem) (rest rem)
+                             (update-in organized [:base :transit]
+                                        #(prepend % response))))
+                    bike
+                    (if (= mode "WALKING")
+                      (recur (first rem) (rest rem)
+                             (-> organized 
+                                 (update-in [:bike :walking] 
+                                            #(prepend % response))
+                                 (update-in [:bike-car :walking] 
+                                            #(prepend % response))))
+                      (recur (first rem) (rest rem)
+                             (-> organized
+                                 (update-in [:bike :transit]
+                                            #(prepend % response))
+                                 (update-in [:bike-car :transit]
+                                            #(prepend % response)))))
+                    car
+                    (if (= mode "WALKING")
+                      (recur (first rem) (rest rem)
+                             (-> organized 
+                                 (update-in [:car :walking] 
+                                            #(prepend % response))
+                                 (update-in [:car-bike :walking] 
+                                            #(prepend % response))))
+                      (recur (first rem) (rest rem)
+                             (-> organized
+                                 (update-in [:car :transit]
+                                            #(prepend % response))
+                                 (update-in [:car-bike :transit]
+                                            #(prepend % response))))))
+                  (if (= origin bike)
+                    (condp = destination
+                      end
+                      (recur (first rem) (rest rem)
+                             (-> organized
+                                 (update-in [:bike :walking]
+                                            #(append % response))
+                                 (update-in [:bike :transit]
+                                            #(append % response))
+                                 (update-in [:car-bike :walking]
+                                            #(append % response))
+                                 (update-in [:car-bike :transit]
+                                            #(append % response))))
+                      car
+                      (recur (first rem) (rest rem)
+                             (-> organized
+                                 (update-in [:bike-car :walking]
+                                            #(insert-middle % response))
+                                 (update-in [:bike-car :transit]
+                                            #(insert-middle % response)))))
+                    ;; car location
+                    (condp = destination
+                      end
+                      (recur (first rem) (rest rem)
+                             (-> organized
+                                 (update-in [:car :walking]
+                                            #(append % response))
+                                 (update-in [:car :transit]
+                                            #(append % response))
+                                 (update-in [:bike-car :walking]
+                                            #(append % response))
+                                 (update-in [:bike-car :transit]
+                                            #(append % response))))
+                      bike
+                      (recur (first rem) (rest rem)
+                             (-> organized
+                                 (update-in [:car-bike :walking]
+                                            #(insert-middle % response))
+                                 (update-in [:car-bike :transit]
+                                            #(insert-middle % response))))))))))))
 
      (defn handler [responses]
        (let [organized-responses (organize-responses responses)]
@@ -220,11 +222,11 @@
                   nil (conj route mode))))))
 
      (! vm.main (fn []
-                  (let [delay 800 ;; delay between requests
-                        routes (gather-routes (? vm.user.startLocation)
+                  (let [routes (gather-routes (? vm.user.startLocation)
                                               (? vm.user.carLocation)
                                               (? vm.user.bikeLocation)
-                                              (? vm.user.endLocation))]
+                                              (? vm.user.endLocation))
+                        delay (if (< (count routes) 10) 0 600)]
                     (make-requests routes delay))))
      vm)
 
