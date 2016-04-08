@@ -21,6 +21,13 @@
                     js/google.maps.TravelMode.BICYCLING 
                     (not (nil? (? UserService.preferences.bikeLocation)))}]
          (keys (into {} (filter second modes)))))
+     :callbackFunctions (clj->js [])
+     :registerObserver (fn [callback-fn]
+                 (.push (? reqObj.callbackFunctions) callback-fn))
+     :sendResultsToObservers 
+     (fn [payload]
+       (doseq [callback (? reqObj.callbackFunctions)]
+         (callback payload)))
      :organizeResponses
      (fn [responses]
        (filter 
@@ -118,7 +125,8 @@
                                             #(append % response))
                                  (update-in [:car :transit]
                                             #(append % response))
-
+                                 (update-in [:bike-car :walking]
+                                            #(append % response))
                                  (update-in [:bike-car :transit]
                                             #(append % response))))
                       bike
@@ -131,6 +139,7 @@
     :handler      
     (fn [responses]
       (let [organized-responses ((? reqObj.organizeResponses) responses)]
+        ((? reqObj.sendResultsToObservers) organized-responses)
         ((? GoogleMapsService.displayRoutes) 
          ((? CostService.getOptimalRoute) 
           (for [x organized-responses y (second x)]

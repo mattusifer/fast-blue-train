@@ -117,7 +117,7 @@ header.header-post-init {
 }
 
 #instructions-container {
-    display: block;
+    display: inline-block;
     width: 50%;
 }
 
@@ -191,4 +191,11 @@ header.header-post-init {
     display: inline-block;
     text-align: center;
     width: 160px;
+}
+
+#results {
+    display: inline-block;
+    width: 40%; height: 100%;
+    vertical-align: top;
+    padding: 15px;
 }

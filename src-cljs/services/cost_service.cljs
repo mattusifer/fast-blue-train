@@ -24,19 +24,14 @@
            0)))
      :getOptimalRoute
      (fn [routes]
-       (.log js/console "routes")
-       (.log js/console 
-             (clj->js (for [r routes]
-                           (map (? costObj.getMonetaryCost) r))))
-
        ; optimal route based on cost
-       (apply min-key
-              #(reduce + (map (? costObj.getMonetaryCost) %)) routes)
+       ;; (apply min-key
+              ;; #(reduce + (map (? costObj.getMonetaryCost) %)) routes)
 
        ; optimal route based on duration
-       ;; (apply min-key
-              ;; #(reduce + (map (? GoogleMapsService.getDurationFromResponse)
-                            ;; %)) routes)
+       (apply min-key
+              #(reduce + (map (? GoogleMapsService.getDurationFromResponse)
+                            %)) routes)
 
 )))
   costObj)

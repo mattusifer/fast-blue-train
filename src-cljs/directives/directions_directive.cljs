@@ -1,7 +1,6 @@
 (ns ^{:doc "AngularJS Directive for Getting Directions"}
   fast-blue-train.directives.directions-directive
-  (:require [fast-blue-train.services.google-maps-service :as maps]
-            [dommy.core :as dommy :refer-macros [sel1 sel]])
+  (:require [dommy.core :as dommy :refer-macros [sel1 sel]])
   (:use-macros [purnam.core :only [obj ! ?]]
                [gyr.core :only [def.controller def.directive]]))
 
@@ -25,17 +24,6 @@
      (! vm.user (? UserService.preferences))
      (! vm.setPreference
         (fn [pref val] ((? UserService.setPreference) pref val)))
-
-     (defn get-optimal-route 
-       "return the best route"
-       [routes]
-       (.log js/console "routes")
-       (.log js/console (clj->js routes))
-
-       (apply min-key
-              #(reduce + 
-                       (map (? GoogleMapsService.getDurationFromResponse)
-                            %)) routes))
      vm)
 
    :link
