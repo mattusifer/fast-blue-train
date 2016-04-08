@@ -25,6 +25,14 @@
      :getDurationFromResponse 
      (fn [response]
        (.-value (.-duration (first (.-legs (first (.-routes response)))))))
+     :getMilesFromResponse
+     (fn [response]
+       (let [parse-miles 
+             (fn [text]
+               (js/parseFloat 
+                (.substring text 0 (- (.indexOf text "mi") 1))))]
+         (parse-miles 
+          (.-text (.-distance (first (.-legs (first (.-routes response)))))))))
      :getTransportModeFromResponse
      (fn [response]
        (? response.request.travelMode))

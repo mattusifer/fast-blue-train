@@ -25,6 +25,7 @@
      (! vm.setPreference
         (fn [pref val] ((? UserService.setPreference) pref val)))
      vm)
+
    :link
    (fn [scope elem attr controller]
      (let [ac-opts (? GoogleMapsService.autocompleteOpts)
