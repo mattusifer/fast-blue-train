@@ -4,8 +4,7 @@
   (:use-macros [purnam.core :only [! obj ?]]
                [gyr.core :only [def.factory]]))
 
-(def.factory fbm.app.CostService [GoogleMapsService
-                                  UserService]
+(def.factory fbm.app.CostService [GoogleMapsService UserService]
   (def costObj
     (obj 
      :costConstants (obj 
@@ -25,13 +24,13 @@
      :getOptimalRoute
      (fn [routes]
        ; optimal route based on cost
-       ;; (apply min-key
-              ;; #(reduce + (map (? costObj.getMonetaryCost) %)) routes)
+       (apply min-key
+              #(reduce + (map (? costObj.getMonetaryCost) %)) routes)
 
        ; optimal route based on duration
-       (apply min-key
-              #(reduce + (map (? GoogleMapsService.getDurationFromResponse)
-                            %)) routes)
+       ;; (apply min-key
+              ;; #(reduce + (map (? GoogleMapsService.getDurationFromResponse)
+                            ;; %)) routes)
 
 )))
   costObj)

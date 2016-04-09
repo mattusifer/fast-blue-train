@@ -4,7 +4,7 @@
   (:use-macros [purnam.core :only [obj ! ?]]
                [gyr.core :only [def.controller def.directive]]))
 
-(def.directive fbm.app.resultsDisplay [RequestService]
+(def.directive fbm.app.resultsDisplay [RequestService CostService GoogleMapsService]
   (obj
    :restrict "E"
    :templateUrl "angular/src/partials/resultsDisplay.html"
@@ -16,15 +16,18 @@
      (def vm this)
      (! vm.results (clj->js {}))
 
-     (defn setResults [organized-responses]
-       (let [just-routes (for [option organized-responses
-                               route (second option)]
-                           (? (map #(.-request %) (second route))))]
-         (! vm.results (clj->js just-routes))))
-
-     ((? RequestService.registerObserver) setResults)
-     
+     (! vm.setResults 
+        (fn [organized-responses]
+          (let [just-routes 
+                (for [option organized-responses
+                      route (second option)]
+                  (map #(assoc (js->clj (.-request %)) 
+                               :cost ((? CostService.getMonetaryCost) %)
+                               :duration ((? GoogleMapsService.getDurationFromResponse) %)) 
+                       (second route)))]
+            (! vm.results (clj->js just-routes)))))
      vm)
 
    :link
-   (fn [scope elm attr controller] )))
+   (fn [scope elm attr controller]
+    ((? RequestService.registerObserver) (? controller.setResults)))))

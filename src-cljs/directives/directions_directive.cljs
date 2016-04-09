@@ -4,10 +4,7 @@
   (:use-macros [purnam.core :only [obj ! ?]]
                [gyr.core :only [def.controller def.directive]]))
 
-(def.directive fbm.app.directions [$q 
-                                   UserService 
-                                   GoogleMapsService
-                                   RequestService]
+(def.directive fbm.app.directions [$q UserService GoogleMapsService RequestService]
   (obj
    :restrict "E"
    :templateUrl "angular/src/partials/directions.html"
