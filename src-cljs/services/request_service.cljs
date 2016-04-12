@@ -18,12 +18,21 @@
                     js/google.maps.TravelMode.BICYCLING 
                     (not (nil? (? UserService.preferences.bikeLocation)))}]
          (keys (into {} (filter second modes)))))
-     :callbackFunctions (clj->js [])
-     :registerObserver (fn [callback-fn]
-                 (.push (? reqObj.callbackFunctions) callback-fn))
-     :sendResultsToObservers 
+     :sendingRequestCallbacks (clj->js [])
+     :registerAsSendingRequestObserver 
+     (fn [callback-fn]
+       (.push (? reqObj.sendingRequestCallbacks) callback-fn))
+     :callbackSendingRequest
+     (fn []
+       (doseq [callback (? reqObj.sendingRequestCallbacks)]
+         (callback)))
+     :completedRequestCallbacks (clj->js [])
+     :registerAsCompletedRequestObserver 
+     (fn [callback-fn]
+       (.push (? reqObj.completedRequestCallbacks) callback-fn))
+     :callbackRequestCompleted 
      (fn [payload]
-       (doseq [callback (? reqObj.callbackFunctions)]
+       (doseq [callback (? reqObj.completedRequestCallbacks)]
          (callback payload)))
      :organizeResponses
      (fn [responses]
@@ -135,7 +144,7 @@
      :handler      
      (fn [responses]
        (let [organized-responses ((? reqObj.organizeResponses) responses)]
-         ((? reqObj.sendResultsToObservers) organized-responses)
+         ((? reqObj.callbackRequestCompleted) organized-responses)
          ((? GoogleMapsService.displayRoutes) 
           ((? CostService.getOptimalRoute) 
            (for [x organized-responses y (second x)]
@@ -204,5 +213,6 @@
                      (? UserService.preferences.bikeLocation)
                      (? UserService.preferences.endLocation))
              delay (if (< (count routes) 10) 0 600)]
+         (when (> delay 0) ((? reqObj.callbackSendingRequest)))
          ((? reqObj.makeRequests) routes delay)))))
   reqObj)

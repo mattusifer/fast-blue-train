@@ -133,7 +133,7 @@ header.header-post-init {
 /* ----------- both views ----------- */
 
 #input-container input {
-    width: 45%;
+    width: 44%;
     padding: 10px;
 }
 
@@ -198,4 +198,117 @@ header.header-post-init {
     width: 40%; height: 100%;
     vertical-align: top;
     padding: 15px;
+}
+
+/* loader */
+.loading-overlay {
+    display: block;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 200;
+}
+
+.load-container {
+    display: block;
+    position: absolute;
+    top: 200px; left: 50%;
+    height: 300px;
+    width: 300px;
+    margin-left: -150px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.5);    
+}
+
+.load-msg {
+    display: block;
+    position: relative;
+    width: 100%;
+    text-align: center;
+    background: #fff;
+}
+
+.loading-overlay .spinner {
+    position: absolute;
+    top: 0; left: 50%;
+    width: 1em;
+    height: 1em;
+    margin-left: -90px;
+    border-radius: 50%;
+    border: .01em solid rgba(150,150,150,0.1); 
+    list-style: none;
+    font-size: 100px; 
+    z-index: 201;
+}
+
+.loading-overlay .spinner li {
+    position: absolute;
+    border-radius: 50%;
+    width: .2em;
+    height: .2em;
+}
+
+.loading-overlay .spinner li:nth-child(1) {
+    background: #00C176; /* Blue */
+    top: 0;
+    left: 50%;
+    margin-left: -.1em; /* Width/2 */
+    transform-origin: 50% 250%;
+    animation: 
+    rota 1.13s linear infinite,
+    opa 3.67s ease-in-out infinite alternate;
+}
+
+.loading-overlay .spinner li:nth-child(2) {
+    background: #FF003C; /* Red */
+    top: 50%; 
+    right: 0;
+    margin-top: -.1em; /* Height/2 */
+    transform-origin: -150% 50%;
+    animation: 
+    rota 1.86s linear infinite,
+    opa 4.29s ease-in-out infinite alternate;
+}
+
+.loading-overlay .spinner li:nth-child(3) {
+    background: #FABE28; /* Yellow */
+    bottom: 0;
+    left: 50%; 
+    margin-left: -.1em; /* Width/2 */
+    transform-origin: 50% -150%;
+    animation: 
+    rota 1.45s linear infinite,
+    opa 5.12s ease-in-out infinite alternate;
+}
+
+.loading-overlay .spinner li:nth-child(4) {
+    background: #88C100; /* Green */
+    top: 50%; 
+    left 0;
+    margin-top -.1em; /* Height/2 */
+    transform-origin: 250% 50%;
+    animation: 
+    rota 1.72s linear infinite,
+    opa 5.25s ease-in-out infinite alternate;
+}
+
+@keyframes rota {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes opa {
+    12.0% { opacity: 0.80em; }
+    19.5% { opacity: 0.88em; }
+    37.2% { opacity: 0.64em; }
+    40.5% { opacity: 0.52em; }
+    52.7% { opacity: 0.69em; }
+    60.2% { opacity: 0.60em; }
+    66.6% { opacity: 0.52em; }
+    70.0% { opacity: 0.63em; }
+    79.9% { opacity: 0.60em; }
+    84.2% { opacity: 0.75em; }
+    91.0% { opacity: 0.87em; }
 }

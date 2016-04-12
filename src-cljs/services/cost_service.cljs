@@ -21,16 +21,34 @@
            "TRANSIT" (? costObj.costConstants.transit)
            "DRIVING" (* (/ (? costObj.costConstants.gas) mpg) distance)
            0)))
+     :organizeRoutes
+     (fn [routes]
+       (let [agg-duration 
+             (fn [route-coll]
+               (reduce + (map (? GoogleMapsService.getDurationFromResponse) 
+                              route-coll)))
+             agg-monetary-cost
+             (fn [route-coll]
+               (reduce + (map (? costObj.getMonetaryCost) route-coll)))]
+         (loop [possibilities (conj '() (first routes))
+                rem (rest routes)]
+           (if (empty? rem)
+             (into (sorted-set-by 
+                    (fn [e1 e2] 
+                      (let [comparison 
+                            (compare (agg-duration e1)
+                                     (agg-duration e2))]
+                        (if (not= comparison 0) 
+                          comparison
+                          1)))) 
+                   possibilities)
+             (if (and (<= (agg-monetary-cost (first rem))
+                          (? UserService.preferences.budget)))
+               (recur (conj possibilities (first rem)) (rest rem))
+               (recur possibilities (rest rem)))))))
      :getOptimalRoute
      (fn [routes]
-       ; optimal route based on cost
-       (apply min-key
-              #(reduce + (map (? costObj.getMonetaryCost) %)) routes)
-
-       ; optimal route based on duration
-       ;; (apply min-key
-              ;; #(reduce + (map (? GoogleMapsService.getDurationFromResponse)
-                            ;; %)) routes)
-
-)))
+       (let [organized ((? costObj.organizeRoutes) routes)]
+         (.log js/console (clj->js organized))
+         (first organized)))))
   costObj)

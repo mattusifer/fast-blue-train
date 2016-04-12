@@ -30,4 +30,4 @@
 
    :link
    (fn [scope elm attr controller]
-    ((? RequestService.registerObserver) (? controller.setResults)))))
+    ((? RequestService.registerAsCompletedRequestObserver) (? controller.setResults)))))

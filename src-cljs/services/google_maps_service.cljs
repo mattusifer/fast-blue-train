@@ -19,7 +19,7 @@
                      :BICYCLING (js/google.maps.Polyline. 
                                  (obj :strokeColor "#000000")))
      :mapOpts (let [philly (js/google.maps.LatLng. 39.95 -75.1667)]
-                (obj :zoom 10
+                (obj :zoom 12
                      :center philly
                      :mapTypeId "roadmap"))
      :getDurationFromResponse 
@@ -57,7 +57,7 @@
                renderer (js/google.maps.DirectionsRenderer. 
                          (obj :polylineOptions 
                               (aget (? mapObj.polyLines) mode)
-                              :preserveViewport true))]
+                             :preserveViewport true))]
            (.setMap renderer (? mapObj.gMap))
            (.setPanel renderer (? mapObj.panel))
            (.setDirections renderer route)

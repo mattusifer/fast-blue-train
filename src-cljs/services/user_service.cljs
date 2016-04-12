@@ -7,12 +7,15 @@
 (def.factory fbm.app.UserService []
   (def user 
     (obj
-     :preferences {:startLocation nil
-                   :endLocation nil
-                   :carLocation nil
-                   :carMPG nil
-                   :bikeLocation nil
-                   :budget nil}
+     :preferences {:age            nil
+                   :weight         nil
+                   :startLocation  nil
+                   :endLocation    nil
+                   :carLocation    nil
+                   :carMPG         nil
+                   :bikeLocation   nil
+                   :budget         nil
+                   :transPass      nil}
      :setPreference (fn [preference value] 
                       (! user.preferences.|preference| value))))
   user)
