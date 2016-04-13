@@ -49,6 +49,6 @@
      :getOptimalRoute
      (fn [routes]
        (let [organized ((? costObj.organizeRoutes) routes)]
-         (.log js/console (clj->js organized))
+         ;; (.log js/console (clj->js organized))
          (first organized)))))
   costObj)

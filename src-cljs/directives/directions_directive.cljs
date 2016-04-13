@@ -4,7 +4,8 @@
   (:use-macros [purnam.core :only [obj ! ?]]
                [gyr.core :only [def.controller def.directive]]))
 
-(def.directive fbm.app.directions [$q UserService GoogleMapsService RequestService]
+(def.directive fbm.app.directions [$q UserService GoogleMapsService 
+                                   RequestService UberService]
   (obj
    :restrict "E"
    :templateUrl "angular/src/partials/directions.html"
@@ -38,7 +39,10 @@
                      (fn [] (let [place (.getPlace this)]
                               ((? controller.setPreference) 
                                "startLocation"
-                               (? place.formatted_address)))))
+                               (assoc {} 
+                                      :address (? place.formatted_address) 
+                                      :lat-long [(.lat (? place.geometry.location))
+                                                 (.long (? place.geometry.location))])))))
 
        (.addListener js/google.maps.event end-ac "place_changed"
                      (fn [] (let [place (.getPlace this)]

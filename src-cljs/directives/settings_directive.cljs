@@ -40,9 +40,15 @@
                      (fn [] (let [place (.getPlace this)]
                               ((? controller.setPreference) 
                                "carLocation"
-                               (? place.formatted_address)))))
+                               (assoc {} 
+                                      :address (? place.formatted_address) 
+                                      :lat-long [(.lat (? place.geometry.location))
+                                                 (.long (? place.geometry.location))])))))
        (.addListener js/google.maps.event bike-ac "place_changed"
                      (fn [] (let [place (.getPlace this)]
                               ((? controller.setPreference) 
                                "bikeLocation"
-                               (? place.formatted_address)))))))))
+                               (assoc {} 
+                                      :address (? place.formatted_address) 
+                                      :lat-long [(.lat (? place.geometry.location))
+                                                 (.long (? place.geometry.location))])))))))))

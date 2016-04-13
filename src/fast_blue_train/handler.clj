@@ -1,5 +1,6 @@
 (ns fast-blue-train.handler
-  (:require [compojure.core :refer :all]
+  (:require [fast-blue-train.uber-handlers :as uber]
+            [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.util.response :as resp]
             [ring.middleware.json :as ring-json]
@@ -12,6 +13,8 @@
                 #(if (= "/" %) "/index.html" %)))))
 
 (defroutes app-routes
+  (GET "/uber-price" [] uber/uber-price-handler)
+  (GET "/uber-time" [] uber/uber-time-handler)
   (route/not-found "Page not found"))
 
 (def app

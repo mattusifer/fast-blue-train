@@ -3,6 +3,7 @@
   :url "http://example.com/FIXME"
   :min-lein-version "2.0.0"
   :dependencies [[org.clojure/clojure "1.8.0"]
+                 [clj-http "2.1.0"]
                  [org.clojure/core.async "0.2.374"]
                  [compojure "1.4.0"]
                  [ring/ring-core "1.4.0"]
@@ -10,6 +11,7 @@
                  [ring/ring-defaults "0.1.5"]
                  [org.clojure/clojurescript "1.7.228"]
                  [cljs-http "0.1.39"]
+                 [cljs-ajax "0.5.4"]
                  [org.clojure/core.async "0.2.374"]
                  [prismatic/dommy "1.1.0"]
                  [im.chit/gyr "0.3.1"]]

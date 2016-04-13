@@ -6,7 +6,11 @@
                [gyr.core :only [def.factory]]
                [cljs.core.async.macros :only [go-loop]]))
 
-(def.factory fbm.app.RequestService [$q UserService GoogleMapsService CostService]
+(def.factory fbm.app.RequestService [$q 
+                                     UserService 
+                                     GoogleMapsService 
+                                     CostService
+                                     UberService]
   (def reqObj
     (obj
      :availableModes 
@@ -151,6 +155,8 @@
              (second y))))))
      :makeRequests
      (fn [routes delay]
+
+       ;; google maps
        (go-loop [[start end mode :as route] (first routes)
                  remaining (rest routes)
                  promises []]
@@ -160,9 +166,17 @@
                     (.log js/console (str "retrying with delay ") (+ delay 500))
                     ((? reqObj.makeRequests) routes (+ delay 500))))
            (do (<! (timeout delay))
-               (recur (first remaining) (rest remaining) 
-                      (conj promises ((? GoogleMapsService.getDirections) 
-                                      start end mode)))))))
+               (let [new-promise-arr (if (= mode "DRIVING") 
+                                       '(conj promises 
+                                              ((? GoogleMapsService.getDirections) 
+                                               (start :address) (end :address) mode))
+                                       '(conj promises 
+                                              ((? GoogleMapsService.getDirections) 
+                                               (start :address) (end :address) mode) 
+                                              ((? UberService.getTimeEstimate) (start :lat-long))
+                                              ((? UberService.getCostEstimate) 
+                                               (start :lat-long) (end :lat-long))))]
+                 (recur (first remaining) (rest remaining) (new-promise-arr)))))))
      :gatherRoutes
      (fn [start car bike end]
        (filter 
