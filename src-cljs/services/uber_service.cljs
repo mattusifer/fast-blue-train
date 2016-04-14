@@ -10,33 +10,43 @@
 (def.factory fbm.app.UberService [$q]
   (def uberObj
     (obj 
-     :priceHandler 
-     (fn [response] response)
-     :timeHandler
-     (fn [response] response)
      :getPriceEstimate 
      (fn [start end]
        (let [deferred (.defer $q)
              handler 
              (fn [resp]
-               (if (= (resp :status) 200)
-                 (.resolve deferred (resp :body))
-                 (.reject deferred (str "Failed due to " (resp :body)))))]
+               (.resolve deferred resp))
+             err-handler 
+             (fn [resp]
+               (.reject deferred (str "Failed due to " resp)))]
          (GET "/uber-price" 
               {:params {:start start
                         :end end}
-               :handler (? uberObj.priceHandler)})
+               :handler handler
+               :error-handler err-handler
+               :response-format :json})
          (.then (.-promise deferred)
-                (fn [resp] resp)
+                (fn [resp] (clj->js (assoc resp 
+                                           :type "UBER-PRICE" 
+                                           :request {:origin (clojure.string/split start #",")})))
                 (fn [err] (.reject $q err)))))
      :getTimeEstimate
-     (fn [start product_id]
-       (if (nil? product_id)
+     (fn [start]
+       (let [deferred (.defer $q)
+             handler 
+             (fn [resp]
+               (.resolve deferred resp))
+             err-handler 
+             (fn [resp]
+               (.reject deferred (str "Failed due to " resp)))]
          (GET "/uber-time"
               {:params {:start start}
-               :handler (? uberObj.timeHandler)})
-         (GET "/uber-time"
-              {:params {:start start
-                        :product_id product_id}
-               :handler (? uberObj.timeHandler)})))))
+               :handler handler
+               :error-handler err-handler
+               :response-format :json})
+         (.then (.-promise deferred)
+                (fn [resp] (clj->js (assoc resp 
+                                           :type "UBER-TIME"
+                                           :request {:origin (clojure.string/split start #",")})))
+                (fn [err] (.reject $q err)))))))
   uberObj)

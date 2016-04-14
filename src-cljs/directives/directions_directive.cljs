@@ -39,16 +39,19 @@
                      (fn [] (let [place (.getPlace this)]
                               ((? controller.setPreference) 
                                "startLocation"
-                               (assoc {} 
-                                      :address (? place.formatted_address) 
-                                      :lat-long [(.lat (? place.geometry.location))
-                                                 (.long (? place.geometry.location))])))))
+                               (clj->js (assoc {} 
+                                               :address (? place.formatted_address) 
+                                               :lat-long [(.lat (? place.geometry.location))
+                                                          (.lng (? place.geometry.location))]))))))
 
        (.addListener js/google.maps.event end-ac "place_changed"
                      (fn [] (let [place (.getPlace this)]
                               ((? controller.setPreference) 
                                "endLocation"
-                               (? place.formatted_address)))))
-
+                               (clj->js (assoc {} 
+                                             :address (? place.formatted_address) 
+                                             :lat-long [(.lat (? place.geometry.location))
+                                                        (.lng (? place.geometry.location))]))))))
+       
        ;Submit 
        (dommy/listen! submit-elem "click" (? RequestService.start))))))

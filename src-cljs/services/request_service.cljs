@@ -1,7 +1,8 @@
 (ns ^{:doc "AngularJS Service to Organize, Make, and Handle requests"}
   fast-blue-train.services.request-service
   (:require [dommy.core :as dommy :refer-macros [sel1]]
-            [cljs.core.async :refer [<! timeout]])
+            [cljs.core.async :refer [<! timeout]]
+            [clojure.set])
   (:use-macros [purnam.core :only [! obj ?]]
                [gyr.core :only [def.factory]]
                [cljs.core.async.macros :only [go-loop]]))
@@ -57,15 +58,16 @@
                                              (conj [] (first vec) el (last vec))
                                              (prepend vec el)))
                            append (fn [vec el] (conj (into [] (butlast vec)) el))
-                           start (? UserService.preferences.startLocation)
-                           end (? UserService.preferences.endLocation)
-                           bike (? UserService.preferences.bikeLocation)
-                           car (? UserService.preferences.carLocation)
+                           start (? UserService.preferences.startLocation.address)
+                           end (? UserService.preferences.endLocation.address)
+                           bike (? UserService.preferences.bikeLocation.address)
+                           car (? UserService.preferences.carLocation.address)
                            origin (? response.request.origin)
                            destination (str (? response.request.destination))
                            mode 
                            ((? GoogleMapsService.getTransportModeFromResponse)
                             response)]
+
                        (if (= origin start)
                          (condp = destination
                            end 
@@ -147,7 +149,18 @@
                                                    #(insert-middle % response))))))))))))
      :handler      
      (fn [responses]
-       (let [organized-responses ((? reqObj.organizeResponses) responses)]
+       (let [uber-times (into #{} (map #(dissoc % :type) 
+                                       (filter #(= (:type %) "UBER-TIME") 
+                                               (js->clj responses :keywordize-keys true))))
+             uber-prices (into #{} (map #(dissoc % :type) 
+                                        (filter #(= (:type %) "UBER-PRICE") 
+                                                (js->clj responses :keywordize-keys true))))]
+         (.log js/console (clj->js (clojure.set/join uber-times uber-prices (:request :request)))))
+
+       (let [organized-responses ((? reqObj.organizeResponses) 
+                                  (clj->js (filter #(and (not= (:type %) "UBER-TIME") 
+                                                         (not= (:type %) "UBER-PRICE")) 
+                                                   (js->clj responses :keywordize-keys true))))]
          ((? reqObj.callbackRequestCompleted) organized-responses)
          ((? GoogleMapsService.displayRoutes) 
           ((? CostService.getOptimalRoute) 
@@ -155,8 +168,6 @@
              (second y))))))
      :makeRequests
      (fn [routes delay]
-
-       ;; google maps
        (go-loop [[start end mode :as route] (first routes)
                  remaining (rest routes)
                  promises []]
@@ -164,19 +175,17 @@
            (.then (.all $q (clj->js promises)) (? reqObj.handler) 
                   (fn [err] (.log js/console err) 
                     (.log js/console (str "retrying with delay ") (+ delay 500))
-                    ((? reqObj.makeRequests) routes (+ delay 500))))
+                   ((? reqObj.makeRequests) routes (+ delay 500))))
            (do (<! (timeout delay))
-               (let [new-promise-arr (if (= mode "DRIVING") 
-                                       '(conj promises 
-                                              ((? GoogleMapsService.getDirections) 
-                                               (start :address) (end :address) mode))
-                                       '(conj promises 
-                                              ((? GoogleMapsService.getDirections) 
-                                               (start :address) (end :address) mode) 
-                                              ((? UberService.getTimeEstimate) (start :lat-long))
-                                              ((? UberService.getCostEstimate) 
-                                               (start :lat-long) (end :lat-long))))]
-                 (recur (first remaining) (rest remaining) (new-promise-arr)))))))
+               (recur (first remaining) (rest remaining) 
+                      (if (= mode "WALKING") 
+                        (conj promises ((? GoogleMapsService.getDirections) 
+                                        (? start.address) (? end.address) mode) 
+                              ((? UberService.getTimeEstimate) (? start.lat-long))
+                              ((? UberService.getPriceEstimate) 
+                               (? start.lat-long) (? end.lat-long)))
+                        (conj promises ((? GoogleMapsService.getDirections) 
+                                        (? start.address) (? end.address) mode))))))))
      :gatherRoutes
      (fn [start car bike end]
        (filter 
