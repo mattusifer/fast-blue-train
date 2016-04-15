@@ -8,25 +8,34 @@
   (def costObj
     (obj 
      :costConstants (obj 
-                     :gas 2.194
+                     :gas 2.194 ; avg gas price in philly
                      :transit 1.80)
      :getMonetaryCost
      (fn [response]
        (let [mode ((? GoogleMapsService.getTransportModeFromResponse)
-                   response)
+                   (clj->js response))
              distance ((? GoogleMapsService.getMilesFromResponse)
-                       response)
+                       (clj->js response))
              mpg (or (? UserService.preferences.carMPG) 20)]
          (case mode
            "TRANSIT" (? costObj.costConstants.transit)
-           "DRIVING" (* (/ (? costObj.costConstants.gas) mpg) distance)
+           "DRIVING" (if (nil? (:uber-stats response))
+                       (* (/ (? costObj.costConstants.gas) mpg) distance)
+                       (:cost-usd (:uber-stats response)))
            0)))
+     :getDuration
+     (fn [response]
+       (if (nil? (:uber-stats response))
+         ((? GoogleMapsService.getDurationFromResponse) 
+          (clj->js response))
+         (+ ((? GoogleMapsService.getDurationFromResponse) 
+             (clj->js response))
+            (:time-sec (:uber-stats response)))))
      :organizeRoutes
      (fn [routes]
        (let [agg-duration 
              (fn [route-coll]
-               (reduce + (map (? GoogleMapsService.getDurationFromResponse) 
-                              route-coll)))
+               (reduce + (map (? costObj.getDuration) route-coll)))
              agg-monetary-cost
              (fn [route-coll]
                (reduce + (map (? costObj.getMonetaryCost) route-coll)))]
@@ -49,6 +58,5 @@
      :getOptimalRoute
      (fn [routes]
        (let [organized ((? costObj.organizeRoutes) routes)]
-         ;; (.log js/console (clj->js organized))
-         (first organized)))))
+         (clj->js (first organized))))))
   costObj)

@@ -7,7 +7,8 @@
                [gyr.core :only [def.factory]]
                [cljs.core.async.macros :only [go]]))
 
-(def.factory fbm.app.UberService [$q]
+(def.factory fbm.app.UberService [$q
+                                  UserService]
   (def uberObj
     (obj 
      :getPriceEstimate 
@@ -26,9 +27,20 @@
                :error-handler err-handler
                :response-format :json})
          (.then (.-promise deferred)
-                (fn [resp] (clj->js (assoc resp 
-                                           :type "UBER-PRICE" 
-                                           :request {:origin (clojure.string/split start #",")})))
+                (fn [resp] 
+                  (let [latlng (map js/parseFloat 
+                                    (clojure.string/split end #","))]
+                    (clj->js (assoc resp 
+                                    :type "UBER-PRICE" 
+                                    :request 
+                                    {:destination 
+                                     (:address 
+                                      (val (first (filter #(and (= (first (:lat-long (val %)))
+                                                                   (first latlng))
+                                                                (= (second (:lat-long (val %)))
+                                                                   (second latlng))) 
+                                                          (js->clj (? UserService.preferences) 
+                                                                   :keywordize-keys true)))))}))))
                 (fn [err] (.reject $q err)))))
      :getTimeEstimate
      (fn [start]
@@ -45,8 +57,8 @@
                :error-handler err-handler
                :response-format :json})
          (.then (.-promise deferred)
-                (fn [resp] (clj->js (assoc resp 
-                                           :type "UBER-TIME"
-                                           :request {:origin (clojure.string/split start #",")})))
+                (fn [resp] (clj->js 
+                            (assoc resp 
+                                   :type "UBER-TIME")))
                 (fn [err] (.reject $q err)))))))
   uberObj)
