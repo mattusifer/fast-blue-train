@@ -236,7 +236,8 @@ header.header-post-init {
     top: 0; left: 50%;
     width: 1em;
     height: 1em;
-    margin-left: -90px;
+    margin-left: -55px;
+    padding: 0;
     border-radius: 50%;
     border: .01em solid rgba(150,150,150,0.1); 
     list-style: none;

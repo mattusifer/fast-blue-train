@@ -19,13 +19,11 @@
      (! vm.setResults 
         (fn [organized-responses]
           (let [just-routes 
-                (for [option organized-responses
-                      route (second option)]
-                  (assoc {} (first route)  
-                         (map #(assoc (js->clj (:request %)) 
-                                      :cost ((? CostService.getMonetaryCost) %)
-                                      :duration ((? CostService.getDuration) %)) 
-                              (second route))))]
+                (for [option organized-responses]
+                  (map #(assoc (js->clj (:request %)) 
+                               :cost ((? CostService.getMonetaryCost) %)
+                               :duration ((? CostService.getDuration) %)) 
+                       option))]
             (! vm.results (clj->js just-routes)))))
      vm)
 

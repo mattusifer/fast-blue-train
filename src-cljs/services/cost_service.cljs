@@ -51,10 +51,12 @@
                           comparison
                           1)))) 
                    possibilities)
-             (if (and (<= (agg-monetary-cost (first rem))
-                          (? UserService.preferences.budget)))
-               (recur (conj possibilities (first rem)) (rest rem))
-               (recur possibilities (rest rem)))))))
+             (do (.log js/console (agg-monetary-cost (first rem)))
+                 (.log js/console (? UserService.preferences.budget))
+                 (if (and (<= (agg-monetary-cost (first rem))
+                              (? UserService.preferences.budget)))
+                   (recur (conj possibilities (first rem)) (rest rem))
+                   (recur possibilities (rest rem))))))))
      :getOptimalRoute
      (fn [routes]
        (let [organized ((? costObj.organizeRoutes) routes)]

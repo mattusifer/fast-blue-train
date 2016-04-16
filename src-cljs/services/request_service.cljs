@@ -219,15 +219,15 @@
              organized-responses (-> google-responses
                                      ((? reqObj.organizeResponses))
                                      ((? reqObj.addUberToOrganizedResponses)
-                                      uber-responses))]
+                                      uber-responses))
+             routes (for [x (js->clj organized-responses
+                                     :keywordize-keys true) y 
+                          (second x)]
+                      (second y))]
          ((? GoogleMapsService.displayRoutes) 
-          ((? CostService.getOptimalRoute) 
-           (for [x (js->clj organized-responses
-                            :keywordize-keys true) y 
-                 (second x)]
-             (second y))))
+          ((? CostService.getOptimalRoute) routes))
          ((? reqObj.callbackRequestCompleted) 
-          ((? CostService.organizeRoutes) (js->clj organized-responses :keywordize-keys true)))))
+          ((? CostService.organizeRoutes) routes))))
      :makeRequests
      (fn [routes delay]
        (go-loop [[start end mode :as route] (first routes)
