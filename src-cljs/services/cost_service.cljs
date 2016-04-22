@@ -39,9 +39,10 @@
              agg-monetary-cost
              (fn [route-coll]
                (reduce + (map (? costObj.getMonetaryCost) route-coll)))]
-         (loop [possibilities (conj '() (first routes))
-                rem (rest routes)]
-           (if (empty? rem)
+         (loop [route (first routes)
+                rem (rest routes)
+                possibilities '()]
+           (if (nil? route)
              (into (sorted-set-by 
                     (fn [e1 e2] 
                       (let [comparison 
@@ -51,12 +52,11 @@
                           comparison
                           1)))) 
                    possibilities)
-             (do (.log js/console (agg-monetary-cost (first rem)))
-                 (.log js/console (? UserService.preferences.budget))
-                 (if (and (<= (agg-monetary-cost (first rem))
-                              (? UserService.preferences.budget)))
-                   (recur (conj possibilities (first rem)) (rest rem))
-                   (recur possibilities (rest rem))))))))
+             (if (<= (agg-monetary-cost route)
+                     (or (? UserService.preferences.budget) 0))
+               (recur (first rem) (rest rem)
+                      (conj possibilities route))
+               (recur (first rem) (rest rem) possibilities))))))
      :getOptimalRoute
      (fn [routes]
        (let [organized ((? costObj.organizeRoutes) routes)]
