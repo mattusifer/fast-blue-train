@@ -8,7 +8,6 @@
   (def mapObj
     (obj 
      :gMap nil
-     :panel nil
      :renderers (clj->js [])
      :polyLines (obj :WALKING (js/google.maps.Polyline. 
                                (obj :strokeColor "#FF0000"))
@@ -39,16 +38,15 @@
      :configureMap 
      (fn [map-elem map-opts] 
        (! mapObj.gMap (js/google.maps.Map. map-elem (? mapObj.mapOpts))))
-     :configurePanel
-     (fn [panel-elem] (! mapObj.panel panel-elem))
      :autocompleteOpts (obj :types ["address"]
                             :componentRestrictions {"country" "us"})
      :displayRoutes 
      (fn [routes] 
+
        ; clear map & panel
        (doseq [renderer (? mapObj.renderers)]
          (when (not (nil? renderer))
-           (.setMap renderer nil)) (.setPanel renderer nil))
+           (.setMap renderer nil)))
        (! mapObj.renderers (clj->js []))
 
        ; display new routes
@@ -59,7 +57,6 @@
                               (aget (? mapObj.polyLines) mode)
                              :preserveViewport true))]
            (.setMap renderer (? mapObj.gMap))
-           (.setPanel renderer (? mapObj.panel))
            (.setDirections renderer route)
            (.push (? mapObj.renderers) renderer))))
      :getDirections 

@@ -1,4 +1,15 @@
 <div id="results">
-  Routes considered:
-  <pre>{{ vm.results | json }}</pre>
+  <div id="chosen-route">
+    <h3>Chosen Route</h3>
+    <pre>{{ vm.activeResult | json }}</pre>
+  </div>
+
+  <div id="all-routes">
+    <h3>Routes that match your budget</h3>
+    <button ng-repeat="result in vm.results" class="result-preview"
+            ng-class="{'result-preview-active': vm.activeResultIndex === $index}" 
+            ng-click="vm.setActiveResult(result)">
+      {{ $index + 1}}
+    </button>
+  </div>
 </div>

@@ -45,12 +45,16 @@
            (if (nil? route)
              (into (sorted-set-by 
                     (fn [e1 e2] 
-                      (let [comparison 
+                      (let [duration-comparison 
                             (compare (agg-duration e1)
-                                     (agg-duration e2))]
-                        (if (not= comparison 0) 
-                          comparison
-                          1)))) 
+                                     (agg-duration e2))
+                            monetary-comparison
+                            (compare (agg-monetary-cost e1)
+                                     (agg-monetary-cost e2))]
+                        (if (not= duration-comparison 0) 
+                          duration-comparison
+                          (if (not= monetary-comparison 0)
+                            monetary-comparison 1))))) 
                    possibilities)
              (if (<= (agg-monetary-cost route)
                      (or (? UserService.preferences.budget) 0))

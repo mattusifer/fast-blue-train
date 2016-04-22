@@ -21,5 +21,4 @@
    (fn [scope elem attr]
      (let [map-elem (sel1 :#test-map)
            panel-elem (sel1 :#instructions-container)]
-       ((.-configureMap GoogleMapsService) map-elem)
-       ((.-configurePanel GoogleMapsService) panel-elem)))))
+       ((.-configureMap GoogleMapsService) map-elem)))))

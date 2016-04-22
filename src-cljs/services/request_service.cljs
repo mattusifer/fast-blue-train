@@ -186,7 +186,7 @@
                  finalized-routes 
                  (apply merge 
                         (for [uber-option uber-times]
-                          ;; expand designated uber entry
+                          ;; expand designated uber entry (yikes)
                           (assoc {} 
                                  (keyword (:display_name uber-option))
                                  (filter #(not (empty? %)) 
