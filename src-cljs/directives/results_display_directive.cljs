@@ -4,7 +4,7 @@
   (:use-macros [purnam.core :only [obj ! ?]]
                [gyr.core :only [def.controller def.directive]]))
 
-(def.directive fbm.app.resultsDisplay [RequestService CostService]
+(def.directive fbm.app.resultsDisplay []
   (obj
    :restrict "E"
    :templateUrl "angular/src/partials/resultsDisplay.html"
@@ -12,21 +12,21 @@
    :controllerAs "vm"
    :bindToController true
    :controller 
-   (fn [] 
+   (fn [$scope RequestService CostService] 
      (def vm this)
      (! vm.results (clj->js {}))
 
      (! vm.setResults 
-        (fn [organized-responses]
-          (let [just-routes 
+        (fn [evt args]
+          (let [organized-responses (? args.organizedResponses)
+                just-routes 
                 (for [option organized-responses]
                   (map #(assoc (js->clj (:request %)) 
                                :cost ((? CostService.getMonetaryCost) %)
                                :duration ((? CostService.getDuration) %)) 
                        option))]
             (! vm.results (clj->js just-routes)))))
-     vm)
+     
+     (.$on $scope "requestsComplete" (? vm.setResults))
 
-   :link
-   (fn [scope elm attr controller]
-    ((? RequestService.registerAsCompletedRequestObserver) (? controller.setResults)))))
+     vm)))
