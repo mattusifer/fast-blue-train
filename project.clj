@@ -22,14 +22,15 @@
   :plugins [[lein-ring "0.9.7"]
             [lein-cljsbuild "1.1.2"]
             [environ/environ.lein "0.3.1"]]
-  :hooks [environ.leiningen.hooks]
   :uberjar-name "fast-blue-train-standalone.jar"
   :ring {:handler fast-blue-train.handler/app}
+  :hooks [leiningen.cljsbuild]
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring/ring-mock "0.3.0"]]}}
   :cljsbuild {
               :builds [{:source-paths ["src-cljs"]
                         :compiler {:output-to "resources/public/scripts/main.js"
+                                   :asset-path "scripts"
                                    :optimizations :whitespace
                                    :pretty-print true}}]})
