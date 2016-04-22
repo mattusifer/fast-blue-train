@@ -1,0 +1,1 @@
+web: java $JVM_OPTS -cp target/fast-blue-train-standalone.jar clojure.main -m fast-blue-train.handler
