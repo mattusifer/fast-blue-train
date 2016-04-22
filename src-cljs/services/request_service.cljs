@@ -8,6 +8,7 @@
                [cljs.core.async.macros :only [go-loop]]))
 
 (def.factory fbm.app.RequestService [$q 
+                                     $rootScope
                                      UserService 
                                      GoogleMapsService 
                                      CostService
@@ -22,22 +23,12 @@
                     js/google.maps.TravelMode.BICYCLING 
                     (not (nil? (? UserService.preferences.bikeLocation)))}]
          (keys (into {} (filter second modes)))))
-     :sendingRequestCallbacks (clj->js [])
-     :registerAsSendingRequestObserver 
-     (fn [callback-fn]
-       (.push (? reqObj.sendingRequestCallbacks) callback-fn))
-     :callbackSendingRequest
-     (fn []
-       (doseq [callback (? reqObj.sendingRequestCallbacks)]
-         (callback)))
-     :completedRequestCallbacks (clj->js [])
-     :registerAsCompletedRequestObserver 
-     (fn [callback-fn]
-       (.push (? reqObj.completedRequestCallbacks) callback-fn))
-     :callbackRequestCompleted 
-     (fn [payload]
-       (doseq [callback (? reqObj.completedRequestCallbacks)]
-         (callback payload)))
+     :broadcastSendingRequest
+     (fn [] (.$broadcast $rootScope "sendingRequests"))
+     :broadcastRequestCompleted 
+     (fn [payload] (.$broadcast $rootScope "requestsComplete" 
+                                (obj :organizedResponses
+                                     payload)))
      :organizeResponses
      (fn [responses]
        (filter #(not (some nil? (for [x (second %) y (second x)] y)))
@@ -226,7 +217,7 @@
                       (second y))]
          ((? GoogleMapsService.displayRoutes) 
           ((? CostService.getOptimalRoute) routes))
-         ((? reqObj.callbackRequestCompleted) 
+         ((? reqObj.broadcastRequestCompleted) 
           ((? CostService.organizeRoutes) routes))))
      :makeRequests
      (fn [routes delay]
@@ -294,6 +285,6 @@
                      (? UserService.preferences.bikeLocation)
                      (? UserService.preferences.endLocation))
              delay (if (< (count routes) 10) 0 600)]
-         (when (> delay 0) ((? reqObj.callbackSendingRequest)))
+         (when (> delay 0) ((? reqObj.broadcastSendingRequest)))
          ((? reqObj.makeRequests) routes delay)))))
   reqObj)

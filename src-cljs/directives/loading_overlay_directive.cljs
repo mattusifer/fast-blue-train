@@ -5,7 +5,7 @@
   (:use-macros [purnam.core :only [obj ! ?]]
                [gyr.core :only [def.controller def.directive]]))
 
-(def.directive fbm.app.loadingOverlay [RequestService]
+(def.directive fbm.app.loadingOverlay []
   (obj
    :restrict "E"
    :templateUrl "angular/src/partials/loadingOverlay.html"
@@ -13,7 +13,7 @@
    :controllerAs "vm"
    :bindToController true
    :controller
-   (fn []
+   (fn [$scope RequestService]
      (def vm this)
      (! vm.loaderVisible false)
 
@@ -22,10 +22,9 @@
           (! vm.loaderVisible true)))
      (! vm.hideLoader
         (fn [] 
-          (! vm.loaderVisible false))))
-   :link
-   (fn [scope elem attr controller]
-     ((? RequestService.registerAsSendingRequestObserver) 
-      (? controller.showLoader))
-     ((? RequestService.registerAsCompletedRequestObserver) 
-      (? controller.hideLoader)))))
+          (! vm.loaderVisible false)))
+
+     (.$on $scope "sendingRequests" (? vm.showLoader))
+     (.$on $scope "requestsComplete" (? vm.hideLoader))
+
+     vm)))
