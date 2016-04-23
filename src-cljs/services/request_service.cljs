@@ -124,6 +124,7 @@
                                         (update-in [:bike :walking]
                                                    #(append % response))
                                         (update-in [:bike :transit]
+
                                                    #(append % response))
                                         (update-in [:bike :uber]
                                                    #(append % response))
@@ -190,13 +191,16 @@
                           (assoc {} 
                                  (keyword (:display_name uber-option))
                                  (filter #(not (empty? %)) 
-                                         (into [] (cons (assoc uber-designated-route 
-                                                               :uber-stats
-                                                               {:time-sec (:estimate uber-option)
-                                                                :cost-usd (:high_estimate 
-                                                                           (first (filter #(= (:display_name %) 
-                                                                                              (:display_name uber-option))
-                                                                                          uber-prices)))}) (rest (:uber (val entry)))))))))]
+                                         (into [] (cons (-> uber-designated-route
+                                                            (assoc :uber-stats
+                                                                   {:time-sec (:estimate uber-option)
+                                                                    :cost-usd (:high_estimate 
+                                                                               (first (filter #(= (:display_name %) 
+                                                                                                  (:display_name uber-option))
+                                                                                              uber-prices)))})
+                                                            (assoc-in [:request :travelMode] 
+                                                                      (str "UBER - " (:display_name uber-option)))) 
+                                                        (rest (:uber (val entry)))))))))]
              (recur (first rem) (rest rem) 
                     (assoc full-map (key entry) (merge finalized-routes (dissoc (val entry) :uber))))))))
      :handler      
@@ -285,6 +289,6 @@
                      (? UserService.preferences.bikeLocation)
                      (? UserService.preferences.endLocation))
              delay (if (< (count routes) 10) 0 600)]
-         (when (> delay 0) ((? reqObj.broadcastSendingRequest)))
+         ((? reqObj.broadcastSendingRequest))
          ((? reqObj.makeRequests) routes delay)))))
   reqObj)

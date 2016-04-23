@@ -9,14 +9,16 @@
     (obj 
      :gMap nil
      :renderers (clj->js [])
-     :polyLines (obj :WALKING (js/google.maps.Polyline. 
-                               (obj :strokeColor "#FF0000"))
-                     :DRIVING (js/google.maps.Polyline. 
-                               (obj :strokeColor "#00FF00"))
-                     :TRANSIT (js/google.maps.Polyline. 
-                               (obj :strokeColor "#0000FF"))
+     :polyLines (obj :WALKING   (js/google.maps.Polyline. 
+                                 (obj :strokeColor "#C44D58"))
+                     :DRIVING   (js/google.maps.Polyline. 
+                                 (obj :strokeColor "#FF6B6B"))
+                     :TRANSIT   (js/google.maps.Polyline. 
+                                 (obj :strokeColor "#556270"))
                      :BICYCLING (js/google.maps.Polyline. 
-                                 (obj :strokeColor "#000000")))
+                                 (obj :strokeColor "#4ECDC4"))
+                     :UBER      (js/google.maps.Polyline.
+                                 (obj :strokeColor "#C7F464")))
      :mapOpts (let [philly (js/google.maps.LatLng. 39.95 -75.1667)]
                 (obj :zoom 12
                      :center philly
@@ -42,7 +44,6 @@
                             :componentRestrictions {"country" "us"})
      :displayRoutes 
      (fn [routes] 
-
        ; clear map & panel
        (doseq [renderer (? mapObj.renderers)]
          (when (not (nil? renderer))
@@ -51,13 +52,18 @@
 
        ; display new routes
        (doseq [route routes]
-         (let [mode ((? mapObj.getTransportModeFromResponse) route)
+         (let [raw-mode ((? mapObj.getTransportModeFromResponse) route)
+               mode (if (re-matches #"UBER.*" raw-mode) "UBER" raw-mode)
+               renderable-route (if (re-matches #"UBER.*" raw-mode)
+                                  (clj->js (assoc-in (js->clj route :keywordize-keys true) 
+                                                     [:request :travelMode] "DRIVING"))
+                                  route)
                renderer (js/google.maps.DirectionsRenderer. 
                          (obj :polylineOptions 
                               (aget (? mapObj.polyLines) mode)
                              :preserveViewport true))]
            (.setMap renderer (? mapObj.gMap))
-           (.setDirections renderer route)
+           (.setDirections renderer renderable-route)
            (.push (? mapObj.renderers) renderer))))
      :getDirections 
      (fn [start end mode]

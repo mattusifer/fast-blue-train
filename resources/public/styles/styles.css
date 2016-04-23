@@ -1,6 +1,7 @@
 html, body {
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 body {
@@ -23,6 +24,11 @@ input {
 a[href], input[type='submit'], input[type='image'], label[for], select, button, .pointer {
     cursor: pointer;
 }
+
+.bold {
+    font-weight: bold;
+}
+
 /* ----------- init view ----------- */
 
 header.header-init {
@@ -32,6 +38,7 @@ header.header-init {
     padding: 15px;
     font-size: 3em;
     text-align: center;
+    z-index: 101;
 }
 
 .input-init {
@@ -41,6 +48,7 @@ header.header-init {
     width: 100%;
     height: 100%;    
     background: #fff;
+    z-index: 100;
 }
 
 .input-init #input-container, #submit-container {
@@ -94,6 +102,7 @@ header.header-post-init {
     width: 100%;
     height: 50px;
     background: #fff;
+    z-index: 1;
 }
 
 .input-after-init #input-container {
@@ -111,12 +120,40 @@ header.header-post-init {
     margin: 0;
 }
 
+#map-container {
+    position: fixed;
+    top: 50px; left: 0;
+    display: block;
+    height: 50%;
+    width: 100%;
+    min-width: 1000px;
+    background: #fff;
+    z-index: 1;
+}
+
 #test-map {
     display: inline-block;
-    margin-top: 40px;
+    width: 80%;
+    height: 350px;
+}
+
+#map-legend {
+    display: inline-block;
+    width: 15%;
+    height: 100%;
+    padding: 20px;
+    vertical-align: top;
+}
+
+.legend-label {
     width: 100%;
-    height: 300px;
-    z-index: -1;
+}
+
+.legend-color {
+    display: block;
+    width: 100%;
+    height: 20px;
+    margin-bottom: 20px;
 }
 
 .input-after-init #submit-container button {
@@ -193,19 +230,45 @@ header.header-post-init {
 
 #results {
     display: inline-block;
-    width: 100%; height: 100%;
+    width: 100%; height: 50%;
 }
 
-#chosen-route, #all-routes {
+#results-headers {
+    position: fixed;
+    top: 400px; left: 0;
+    display: block;
+    width: 100%;
+    padding: 20px;
+    background: #fff;
+    z-index: 1;
+}
+
+#results-headers>div {
     display: inline-block;
     width: 45%;
-    padding: 25px;
-    vertical-align: top;
+    height: 30px;
+    font-size: 1.5em;
+}
+
+#chosen-route {
+    position: fixed;
+    top: 500px; left: 0;
+    display: block;
+    height: 300px;
+    padding-left: 20px;
+}
+
+#all-routes {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    padding: 500px 20px 0 50%;
+    z-index: 0;
 }
 
 .result-preview {
     display: block;
-    width: 100%;
+    width: 40%;
     padding: 20px; 
     border: none;
     background: none;
@@ -214,11 +277,11 @@ header.header-post-init {
 }
 
 .result-preview-active {
-    border: solid 1px red;
+    border: solid 1px black;
 }
 
 .result-preview:hover {
-    background: #0FF;
+    background: #bbb;
 }
 
 /* loader */
@@ -228,6 +291,7 @@ header.header-post-init {
     top: 0; left: 0;
     width: 100%;
     height: 100%;
+    background: rgba(255,255,255,0.5);
     overflow: hidden;
     z-index: 200;
 }
@@ -239,9 +303,9 @@ header.header-post-init {
     height: 300px;
     width: 300px;
     margin-left: -150px;
-    border: 1px solid #000;
-    border-radius: 5px;
-    background: rgba(255,255,255,0.5);    
+    /* border: 1px solid #000; */
+    /* border-radius: 5px; */
+    /* background: rgba(255,255,255,0.5);     */
 }
 
 .load-msg {
@@ -304,17 +368,6 @@ header.header-post-init {
     animation: 
     rota 1.45s linear infinite,
     opa 5.12s ease-in-out infinite alternate;
-}
-
-.loading-overlay .spinner li:nth-child(4) {
-    background: #88C100; /* Green */
-    top: 50%; 
-    left 0;
-    margin-top -.1em; /* Height/2 */
-    transform-origin: 250% 50%;
-    animation: 
-    rota 1.72s linear infinite,
-    opa 5.25s ease-in-out infinite alternate;
 }
 
 @keyframes rota {

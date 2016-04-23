@@ -18,11 +18,10 @@
              distance ((? GoogleMapsService.getMilesFromResponse)
                        (clj->js response))
              mpg (or (? UserService.preferences.carMPG) (? costObj.costConstants.defaultMPG))]
-         (case mode
-           "TRANSIT" (if (? UserService.preferences.transPass) 0 (? costObj.costConstants.transit))
-           "DRIVING" (if (nil? (:uber-stats response))
-                       (* (/ (? costObj.costConstants.gas) mpg) distance)
-                       (:cost-usd (:uber-stats response)))
+         (condp re-matches mode
+           #"TRANSIT" (if (? UserService.preferences.transPass) 0 (? costObj.costConstants.transit))
+           #"DRIVING" (* (/ (? costObj.costConstants.gas) mpg) distance)
+           #"UBER - .*" (:cost-usd (:uber-stats response))
            0)))
      :getDuration
      (fn [response]
