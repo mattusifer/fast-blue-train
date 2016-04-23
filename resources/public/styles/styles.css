@@ -187,7 +187,7 @@ header.header-post-init {
     border-radius: none;
     background: #ddd;
     font-weight: bold;
-    z-index: 3;
+    z-index: 101;
 }
 
 #settings-popover {
@@ -201,7 +201,7 @@ header.header-post-init {
     background: #fff;
     font-size: 0.8em;
     color: #000;
-    z-index: 4;
+    z-index: 103;
 }
 
 #settings-popover-scrim {
@@ -210,7 +210,7 @@ header.header-post-init {
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.5);
-    z-index: 2;
+    z-index: 102;
 }
 
 .settings-form-element {
@@ -255,6 +255,8 @@ header.header-post-init {
     top: 500px; left: 0;
     display: block;
     height: 300px;
+    width: 45%;
+    min-width: 450px;
     padding-left: 20px;
 }
 
@@ -262,6 +264,7 @@ header.header-post-init {
     position: absolute;
     top: 0; left: 0;
     width: 100%;
+    min-width: 1000px;
     padding: 500px 20px 0 50%;
     z-index: 0;
 }
@@ -324,7 +327,7 @@ header.header-post-init {
     margin-left: -55px;
     padding: 0;
     border-radius: 50%;
-    border: .01em solid rgba(150,150,150,0.1); 
+    border: .01em solid rgba(150,150,150,0.5); 
     list-style: none;
     font-size: 100px; 
     z-index: 201;
