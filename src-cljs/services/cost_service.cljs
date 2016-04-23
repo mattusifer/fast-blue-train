@@ -9,16 +9,17 @@
     (obj 
      :costConstants (obj 
                      :gas 2.194 ; avg gas price in philly
-                     :transit 1.80)
+                     :transit 1.80
+                     :defaultMPG 20)
      :getMonetaryCost
      (fn [response]
        (let [mode ((? GoogleMapsService.getTransportModeFromResponse)
                    (clj->js response))
              distance ((? GoogleMapsService.getMilesFromResponse)
                        (clj->js response))
-             mpg (or (? UserService.preferences.carMPG) 20)]
+             mpg (or (? UserService.preferences.carMPG) (? costObj.costConstants.defaultMPG))]
          (case mode
-           "TRANSIT" (? costObj.costConstants.transit)
+           "TRANSIT" (if (? UserService.preferences.transPass) 0 (? costObj.costConstants.transit))
            "DRIVING" (if (nil? (:uber-stats response))
                        (* (/ (? costObj.costConstants.gas) mpg) distance)
                        (:cost-usd (:uber-stats response)))
