@@ -26,11 +26,12 @@
 
      (! vm.showCalcMsg
         (fn [] 
-          (! vm.calcMsgVisible true)))
+          (! vm.calcMsgVisible true)
+          (! vm.loaderVisible false)
+          (! vm.reqMsgVisible false)))
 
      (! vm.hideLoader 
         (fn []
-          (! vm.loaderVisible false)
           (! vm.reqMsgVisible false)
           (! vm.calcMsgVisible false)))
 
