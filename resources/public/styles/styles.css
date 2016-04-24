@@ -35,7 +35,6 @@ header.header-init {
     position: absolute;
     top: 30%;
     width: 100%;
-    padding: 15px;
     font-size: 3em;
     text-align: center;
     z-index: 101;
@@ -91,7 +90,7 @@ header.header-post-init {
     position: fixed;
     top: 0; left: 0;
     width: 50px;
-    padding: 9px;
+    padding: 13px;
     font-size: 1.5em;
     z-index: 2;
 }
@@ -101,44 +100,48 @@ header.header-post-init {
     top: 0;
     left: 0;
     width: 100%;
-    height: 50px;
+    height: 75px;
     background: #fff;
     z-index: 1;
 }
 
 .input-after-init #input-container {
     position: absolute;
-    top: 0; left: 50px;
-    padding: 5px;
+    top: 0; left: 60px;
+    padding: 10px;
     width: 500px;
 }
 
 .input-after-init #submit-container {
     position: absolute;
-    top: 0; left: 553px;
+    top: 0; left: 565px;
     width: 115px;
-    padding: 5px;
+    padding: 10px;
     margin: 0;
 }
 
 #map-container {
     position: fixed;
-    top: 50px; left: 0;
+    top: 60px; left: 0;
     display: block;
     height: 300px;
     width: 100%;
-    min-width: 1100px;
     background: #fff;
+    white-space: nowrap;
     z-index: 1;
 }
 
 #test-map {
+    position: absolute;
+    top:0; right: 10px;
     display: inline-block;
     width: 80%;
     height: 300px;
 }
 
 #map-legend {
+    position: absolute;
+    top: 0; left:0;
     display: inline-block;
     width: 15%;
     height: 100%;
@@ -181,8 +184,8 @@ header.header-post-init {
 #settings-button {
     display: block;
     position: fixed;
-    top: 5px;
-    right: 5px;
+    top: 10px;
+    right: 10px;
     padding: 10px;
     border: none;
     border-radius: none;
@@ -196,8 +199,8 @@ header.header-post-init {
     position: fixed;
     top: 100px;
     left: 50%;
-    width: 325px;
-    margin-left: -160px;
+    width: 350px;
+    margin-left: -175px;
     padding: 20px;
     background: #fff;
     font-size: 0.8em;
@@ -223,10 +226,25 @@ header.header-post-init {
     width: 150px;
 }
 
+.settings-input-label {
+    display: inline-block;
+    position: relative;
+}
+
 .settings-form-element-input {
     display: inline-block;
-    text-align: center;
-    width: 100px;
+    position: relative;
+    text-align: right;
+    width: 175px;
+}
+
+.settings-form-element-input input {
+    width: 100%;
+}
+
+.settings-form-element-input #budget-input {
+    display: inline-block;
+    width: 88%
 }
 
 #results {
@@ -236,7 +254,7 @@ header.header-post-init {
 
 #results-headers {
     position: fixed;
-    top: 350px; left: 0;
+    top: 360px; left: 0;
     display: block;
     /* display: none; */
     width: 100%;
@@ -254,18 +272,17 @@ header.header-post-init {
 
 #chosen-route {
     position: fixed;
-    top: 425px; left: 150px;
+    top: 435px; left: 150px;
     display: block;
     height: 300px;
     width: 70%;
-    min-width: 450px;
     padding-left: 20px;
 }
 
 #all-routes {
     position: absolute;
     top: 0; left: 0;
-    padding: 425px 25px 0 25px;
+    padding: 435px 25px 25px;
     z-index: 0;
 }
 
@@ -386,4 +403,93 @@ header.header-post-init {
     79.9% { opacity: 0.60em; }
     84.2% { opacity: 0.75em; }
     91.0% { opacity: 0.87em; }
+}
+
+@media screen and (max-width: 900px) {
+    #map-legend {
+        display: none;
+    }
+
+    #map-container {
+        top: 85px;
+    }
+
+    #test-map {
+        right: auto;
+        width: 100%;
+    }
+
+    header.header-post-init {
+        top: 13px;
+    }
+   
+    #settings-button {
+        top: 22px;
+    }
+
+    .input-after-init #input-container {
+        width: 450px;
+    }
+    
+    .dir-input {
+        height: 10px;
+    }
+
+    .input-after-init #submit-container {
+        top: 12px;
+        left: 290px;
+    }
+
+    #results-headers {
+        top: 370px;
+    }
+
+    #chosen-route {
+        left: 100px;
+    }
+}
+
+@media screen and (max-width: 510px) {
+    header.header-post-init {
+        display: none;
+    }
+    
+    .input-after-init #input-container {
+        left: 0;
+    }
+
+    .input-after-init #submit-container {
+        top: 0px;
+        left: 228px;
+    }
+
+    .input-after-init #submit-container button {
+        padding: 6px;
+    }
+
+    #settings-button {
+        top: 45px;
+        right: auto;
+        left: 238px;
+        padding: 5px;
+        width: 115px;
+    }
+}
+
+@media screen and (max-height: 700px) {
+    #map-container {
+        display: none;
+    }
+
+    #results-headers {
+        display: none;
+    }
+
+    #chosen-route {
+        top: 85px;
+    }
+
+    #all-routes {
+        padding-top: 85px;
+    }
 }

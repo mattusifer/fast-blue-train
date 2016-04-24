@@ -6,37 +6,10 @@
   <div id="settings-header">User Settings</div>
   <div class="settings-form-element">
     <div class="settings-form-element-label">
-      Age:
-    </div>
-    <div class="settings-form-element-input">
-      <input type="text" ng-model="vm.user.age"
-             ng-change="vm.setPreference('age', vm.user.age)" />
-    </div>
-  </div>
-  <div class="settings-form-element">
-    <div class="settings-form-element-label">
-      Weight (lbs):
-    </div>
-    <div class="settings-form-element-input">
-      <input type="text" ng-model="vm.user.weight"
-             ng-change="vm.setPreference('weight', vm.user.weight)" />
-    </div>
-  </div>
-  <div class="settings-form-element">
-    <div class="settings-form-element-label">
       Location of car:
     </div>
     <div class="settings-form-element-input">
       <input type="text" id="carLocationInput" />
-    </div>
-  </div>
-  <div class="settings-form-element">
-    <div class="settings-form-element-label">
-      Car MPG:
-    </div>
-    <div class="settings-form-element-input">
-      <input type="text" ng-model="vm.user.carMPG"
-             ng-change="vm.setPreference('carMPG', vm.user.carMPG)" />
     </div>
   </div>
   <div class="settings-form-element">
@@ -47,12 +20,26 @@
       <input type="text" id="bikeLocationInput"/>
     </div>
   </div>
+
+  <div class="settings-form-element">
+    <div class="settings-form-element-label">
+      Car MPG:
+    </div>
+    <div class="settings-form-element-input">
+      <input type="number" placeholder="20"
+             ng-model="vm.user.carMPG"
+             ng-change="vm.setPreference('carMPG', vm.user.carMPG)" />
+    </div>
+  </div>
   <div class="settings-form-element">
     <div class="settings-form-element-label">
       Budget for trip:
     </div>
     <div class="settings-form-element-input">
-      <input type="text" ng-model="vm.user.budget"
+      <span id="settings-input-label">$</span>
+      <input type="number" placeholder="0.00"
+             id="budget-input"
+             ng-model="vm.user.budget"
              ng-change="vm.setPreference('budget', vm.user.budget)" />
     </div>
   </div>
