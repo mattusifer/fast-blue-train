@@ -1,6 +1,11 @@
+<div class="load-msg" ng-show="vm.reqMsgVisible">
+  Sending requests to Google Maps and Uber...
+</div>
+<div class="load-msg" ng-show="vm.calcMsgVisible">
+  Calculating optimal routes...
+</div>
 <div class="loading-overlay" ng-show="vm.loaderVisible">
   <div class="load-container">
-    <!-- <div class="load-msg">Sending request to Google Maps...</div> -->
     <ul class="spinner">
       <li></li>
       <li></li>

@@ -5,7 +5,7 @@ html, body {
 }
 
 body {
-    font-family: "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif;
+    font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
 }
 
 header {
@@ -127,7 +127,7 @@ header.header-post-init {
     display: block;
     height: 50%;
     width: 100%;
-    min-width: 1000px;
+    min-width: 1100px;
     background: #fff;
     z-index: 1;
 }
@@ -220,13 +220,13 @@ header.header-post-init {
 
 .settings-form-element-label {
     display: inline-block;
-    width: 125px;
+    width: 150px;
 }
 
 .settings-form-element-input {
     display: inline-block;
     text-align: center;
-    width: 160px;
+    width: 100px;
 }
 
 #results {
@@ -313,11 +313,13 @@ header.header-post-init {
 }
 
 .load-msg {
-    display: block;
-    position: relative;
+    position: fixed;
+    top: 150px; left: 0;
     width: 100%;
+    padding: 20px;
     text-align: center;
     background: #fff;
+    z-index: 201
 }
 
 .loading-overlay .spinner {
@@ -328,7 +330,7 @@ header.header-post-init {
     margin-left: -55px;
     padding: 0;
     border-radius: 50%;
-    border: .01em solid rgba(150,150,150,0.5); 
+    border: .01em solid rgba(150,150,150,0.3); 
     list-style: none;
     font-size: 100px; 
     z-index: 201;

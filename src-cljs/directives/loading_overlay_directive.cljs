@@ -16,15 +16,26 @@
    (fn [$scope RequestService]
      (def vm this)
      (! vm.loaderVisible false)
+     (! vm.reqMsgVisible false)
+     (! vm.calcMsgVisible false)
 
      (! vm.showLoader
         (fn []
-          (! vm.loaderVisible true)))
-     (! vm.hideLoader
+          (! vm.loaderVisible true)
+          (! vm.reqMsgVisible true)))
+
+     (! vm.showCalcMsg
         (fn [] 
-          (! vm.loaderVisible false)))
+          (! vm.calcMsgVisible true)))
+
+     (! vm.hideLoader 
+        (fn []
+          (! vm.loaderVisible false)
+          (! vm.reqMsgVisible false)
+          (! vm.calcMsgVisible false)))
 
      (.$on $scope "sendingRequests" (? vm.showLoader))
+     (.$on $scope "beginCalculating" (? vm.showCalcMsg))
      (.$on $scope "requestsComplete" (? vm.hideLoader))
 
      vm)))
