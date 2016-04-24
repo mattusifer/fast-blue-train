@@ -8,15 +8,23 @@
     </div>
   </div>
   
-  <div id="chosen-route">
+  <div id="chosen-route" ng-show="vm.activeResult">
     <ol>
       <li ng-repeat="step in vm.activeResult.routes"
           ng-bind-html="vm.makeRouteReadable(step)">
       </li>
     </ol>
+    <div class="result-aggregates">
+      <span class="bold">Total cost:</span> 
+      $ {{ vm.activeResult.totalCost }}
+    </div>
+    <div class="result-aggregates">
+      <span class="bold">Total duration:</span> 
+      {{ vm.activeResult.totalDuration }}
+    </div>
   </div>
 
-  <div id="all-routes">
+  <div id="all-routes" ng-show="vm.activeResult">
     <button ng-repeat="result in vm.results" class="result-preview"
             ng-class="{'result-preview-active': vm.activeResultIndex === $index}" 
             ng-click="vm.setActiveResult(result)">

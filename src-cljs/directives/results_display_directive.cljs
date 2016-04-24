@@ -82,8 +82,11 @@
                                       :cost ((? CostService.getMonetaryCost) %)
                                       :duration ((? CostService.getDuration) %)) 
                               option)
-                         :totalCost (reduce + (map (? CostService.getMonetaryCost) option))
-                         :totalDuration (reduce + (map #(/ ((? CostService.getDuration) %) 60) option))))]
+                         :totalCost 
+                         (beautify-money (reduce + (map (? CostService.getMonetaryCost) option)))
+                         :totalDuration 
+                         (beautify-time 
+                          (reduce + (map #((? CostService.getDuration) %)  option)))))]
             (! vm.rawResponses (clj->js organized-responses))
             (! vm.results (clj->js just-routes))
             (! vm.activeResult (aget (? vm.results) 0)))))

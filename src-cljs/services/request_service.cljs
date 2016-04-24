@@ -232,7 +232,7 @@
            (.then (.all $q (clj->js promises)) (? reqObj.handler) 
                   (fn [err] (.log js/console err) 
                     (.log js/console (str "retrying with delay ") (+ delay 500))
-                   ((? reqObj.makeRequests) routes (+ delay 500))))
+                    ((? reqObj.makeRequests) routes (+ delay 500))))
            (do (<! (timeout delay))
                (recur (first remaining) (rest remaining) 
                       (if (= mode "WALKING") 

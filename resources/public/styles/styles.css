@@ -93,6 +93,7 @@ header.header-post-init {
     width: 50px;
     padding: 9px;
     font-size: 1.5em;
+    z-index: 2;
 }
 
 .input-after-init {
@@ -252,7 +253,7 @@ header.header-post-init {
 
 #chosen-route {
     position: fixed;
-    top: 500px; left: 0;
+    top: 475px; left: 0;
     display: block;
     height: 300px;
     width: 45%;
@@ -265,7 +266,7 @@ header.header-post-init {
     top: 0; left: 0;
     width: 100%;
     min-width: 1000px;
-    padding: 500px 20px 0 50%;
+    padding: 475px 20px 0 50%;
     z-index: 0;
 }
 
