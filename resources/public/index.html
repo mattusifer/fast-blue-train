@@ -1,25 +1,31 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="fbm.app">
   <head>
+    <title>fast blue train</title>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
     <link rel="stylesheet" 
           type="text/css"
           href="styles/styles.css">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqQTKhPoDC9ruoKDoY1FoT74DxPRQ649Q&libraries=places,geometry"></script>
+
+    <script type="text/javascript" 
+            src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js">
+    </script>
+    <script type="text/javascript" 
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqQTKhPoDC9ruoKDoY1FoT74DxPRQ649Q&libraries=places,geometry">
+    </script>
     <script type="text/javascript">
       angular.module('fbm.app', []);
     </script>
     <script type="text/javascript" src="scripts/main.js"></script>
   </head>
+
   <body>
     <directions></directions>
     <settings></settings>
     <map></map>
-
     <results-display></results-display>
-
     <loading-overlay></loading-overlay>
   </body>
 </html>
