@@ -115,7 +115,7 @@ header.header-post-init {
 .input-after-init #submit-container {
     position: absolute;
     top: 0; left: 565px;
-    width: 115px;
+    width: 150px;
     padding: 10px;
     margin: 0;
 }
@@ -428,7 +428,7 @@ header.header-post-init {
     }
 
     .input-after-init #input-container {
-        width: 445px;
+        width: 400px;
     }
     
     .dir-input {
@@ -472,11 +472,11 @@ header.header-post-init {
         right: auto;
         left: 238px;
         padding: 5px;
-        width: 115px;
+        width: 150px;
     }
 }
 
-@media screen and (max-height: 700px) {
+@media screen and (max-height: 600px) {
     #map-container {
         display: none;
     }
