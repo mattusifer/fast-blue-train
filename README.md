@@ -8,6 +8,5 @@ A web application built using Clojure and ClojureScript to find the fastest, che
 2. Run these:
 ```
 $ cd fast-blue-train
-$ lein cljsbuild once
 $ lein ring server
 ```
