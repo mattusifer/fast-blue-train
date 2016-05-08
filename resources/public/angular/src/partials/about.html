@@ -1,0 +1,26 @@
+<button id="about-button"
+        ng-click="vm.popoverVisible = !vm.popoverVisible">About</button>
+<div  class="popover" ng-show="vm.popoverVisible">
+  <span class="heading">About</span>
+  Fast blue train is a route recommendation system. It will show you
+  the fastest route between two locations based on your personal
+  settings.
+
+  <p>
+    <span class="subheading">Important Notes:</span>
+    By default, it assumes you have a $0 budget, no bike, and no
+    car. You can input your personal preferences in the 'Settings'
+    menu.
+  <p>
+    
+  <p>
+    <span class="subheading">How does it work?</span>  
+    See the
+    <a href="https://github.com/mattusifer/fast-blue-train"
+       target="_blank">
+      source code.
+    </a>
+  </p>
+</div>
+<div class="popover-scrim" ng-show="vm.popoverVisible"
+     ng-click="vm.popoverVisible = !vm.popoverVisible"></div>

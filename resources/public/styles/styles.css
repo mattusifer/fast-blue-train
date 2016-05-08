@@ -170,6 +170,42 @@ header.header-post-init {
 }
 
 /* ----------- both views ----------- */
+.popover {
+    display: block;
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    width: 350px;
+    max-height: 500px;
+    margin-left: -175px;
+    padding: 20px;
+    background: #fff;
+    font-size: 0.8em;
+    color: #000;
+    overflow: scroll;
+    z-index: 103;   
+}
+
+.popover-scrim {
+    position: fixed;
+    top: 0; left:0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 102;
+}
+
+span.heading {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+span.subheading {
+    display: block;
+    font-weight: bold;
+}
 
 #input-container input {
     width: 44%;
@@ -192,29 +228,6 @@ header.header-post-init {
     background: #ddd;
     font-weight: bold;
     z-index: 101;
-}
-
-#settings-popover {
-    display: block;
-    position: fixed;
-    top: 100px;
-    left: 50%;
-    width: 350px;
-    margin-left: -175px;
-    padding: 20px;
-    background: #fff;
-    font-size: 0.8em;
-    color: #000;
-    z-index: 103;
-}
-
-#settings-popover-scrim {
-    position: fixed;
-    top: 0; left:0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 102;
 }
 
 .settings-form-element {
@@ -245,6 +258,19 @@ header.header-post-init {
 .settings-form-element-input #budget-input {
     display: inline-block;
     width: 88%
+}
+
+#about-button {
+    display: block;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: none;
+    background: #ddd;
+    font-weight: bold;
+    z-index: 101;
 }
 
 #results {

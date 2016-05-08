@@ -2,7 +2,7 @@
         ng-click="vm.popoverVisible = !vm.popoverVisible">
   Settings
 </button>
-<div id="settings-popover" ng-show="vm.popoverVisible">
+<div class="popover" ng-show="vm.popoverVisible">
   <div id="settings-header">User Settings</div>
   <div class="settings-form-element">
     <div class="settings-form-element-label">
@@ -53,5 +53,5 @@
     </div>
   </div>
 </div>
-<div id="settings-popover-scrim" ng-show="vm.popoverVisible"
+<div class="popover-scrim" ng-show="vm.popoverVisible"
      ng-click="vm.popoverVisible = !vm.popoverVisible"></div>
